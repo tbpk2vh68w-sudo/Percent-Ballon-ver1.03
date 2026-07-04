@@ -1,10 +1,9 @@
-```javascript id="host_p1_01"
 /*
 =========================================
  Percent Balloon v2
  host.js
  Part1
- ルーム作成・初期化
+ 初期化・DOM・ルーム作成
 =========================================
 */
 
@@ -16,41 +15,46 @@ const HostUI = {
 
     roomId: document.getElementById("roomId"),
 
-    list: document.getElementById("questionList"),
+    questionInput: document.getElementById("questionInput"),
 
-    qText: document.getElementById("questionInput"),
+    answerInput: document.getElementById("answerInput"),
 
-    qAnswer: document.getElementById("answerInput")
+    questionList: document.getElementById("questionList"),
 
-}
+    addButton: document.getElementById("addQuestionButton"),
+
+    saveButton: document.getElementById("saveButton"),
+
+    startButton: document.getElementById("startButton"),
+
+    homeButton: document.getElementById("homeButton")
+
+};
 
 /*=========================================
-    Current Room
+    Room
 =========================================*/
 
 let HostRoom = null;
 
 /*=========================================
-    Initialize Host
+    Generate Room ID
 =========================================*/
 
-function initHost() {
+function generateRoomId() {
 
-    createOrLoadRoom();
-
-    renderRoomInfo();
-
-    bindHostEvents();
+    return Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
 
 }
 
 /*=========================================
-    Create or Load Room
+    Create Room
 =========================================*/
 
-function createOrLoadRoom() {
-
-    const id = generateRoomId();
+function createRoom() {
 
     const rooms = JSON.parse(
 
@@ -58,148 +62,35 @@ function createOrLoadRoom() {
 
     );
 
-    if (rooms[id]) {
+    let id;
 
-        HostRoom = rooms[id];
+    do {
 
-    } else {
+        id = generateRoomId();
 
-        HostRoom = {
+    } while (rooms[id]);
 
-            id: id,
+    HostRoom = {
 
-            questions: []
+        id: id,
 
-        };
+        questions: [],
 
-        rooms[id] = HostRoom;
+        currentQuestion: 0,
 
-        localStorage.setItem(
+        state: "waiting"
 
-            "rooms",
+    };
 
-            JSON.stringify(rooms)
+    rooms[id] = HostRoom;
 
-        );
+    localStorage.setItem(
 
-    }
+        "rooms",
 
-}
+        JSON.stringify(rooms)
 
-/*=========================================
-    Render Room Info
-=========================================*/
-
-function renderRoomInfo() {
-
-    if (!HostUI.roomId) return;
-
-    HostUI.roomId.textContent = HostRoom.id;
-
-}
-`
-function generateRoomId() {
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
-}
-
-/*
-=========================================
- Percent Balloon v2
- host.js
- Part2
- 問題作成・編集・削除
-=========================================
-*/
-
-/*=========================================
-    Add Question
-=========================================*/
-
-function addQuestionHost() {
-
-    const text = HostUI.qText.value;
-
-    const answer = Number(HostUI.qAnswer.value);
-
-    if (!validateQuestion(text, answer)) {
-
-        return;
-
-    }
-
-    HostRoom.questions.push({
-
-        id: Date.now().toString(),
-
-        text: text.trim(),
-
-        answer: answer
-
-    });
-
-    saveHostRoom();
-
-    renderQuestionList();
-
-    clearInputs();
-
-}
-
-/*=========================================
-    Delete Question
-=========================================*/
-
-function deleteQuestionHost(index) {
-
-    if (!HostRoom) return;
-
-    HostRoom.questions.splice(index, 1);
-
-    saveHostRoom();
-
-    renderQuestionList();
-
-}
-
-/*=========================================
-    Render Question List
-=========================================*/
-
-function renderQuestionList() {
-
-    if (!HostUI.list) return;
-
-    HostUI.list.innerHTML = "";
-
-    HostRoom.questions.forEach((q, i) => {
-
-        const item = document.createElement("div");
-
-        item.className = "host-question";
-
-        item.textContent = `${i + 1}. ${q.text} (${q.answer}%)`;
-
-        item.onclick = () => {
-
-            deleteQuestionHost(i);
-
-        };
-
-        HostUI.list.appendChild(item);
-
-    });
-
-}
-
-/*=========================================
-    Clear Inputs
-=========================================*/
-
-function clearInputs() {
-
-    HostUI.qText.value = "";
-
-    HostUI.qAnswer.value = "";
+    );
 
 }
 
@@ -226,14 +117,137 @@ function saveHostRoom() {
     );
 
 }
-```
+
+/*=========================================
+    Initialize
+=========================================*/
+
+function initHost() {
+
+    createRoom();
+
+    HostUI.roomId.textContent = HostRoom.id;
+
+}
+
+
+/*
+=========================================
+ Percent Balloon v2
+ host.js
+ Part2
+ 問題追加・一覧表示
+=========================================
+*/
+
+/*=========================================
+    Validate
+=========================================*/
+
+function validateQuestion(text, answer) {
+
+    if (text.trim() === "") return false;
+
+    if (isNaN(answer)) return false;
+
+    if (answer < 0 || answer > 100) return false;
+
+    return true;
+
+}
+
+/*=========================================
+    Render Question List
+=========================================*/
+
+function renderQuestionList() {
+
+    HostUI.questionList.innerHTML = "";
+
+    HostRoom.questions.forEach((q, i) => {
+
+        const div = document.createElement("div");
+
+        div.className = "hostQuestion";
+
+        div.textContent =
+            (i + 1) +
+            ". " +
+            q.text +
+            " (" +
+            q.answer +
+            "%)";
+
+        const deleteButton = document.createElement("button");
+
+        deleteButton.textContent = "削除";
+
+        deleteButton.onclick = function () {
+
+            HostRoom.questions.splice(i, 1);
+
+            saveHostRoom();
+
+            renderQuestionList();
+
+        };
+
+        div.appendChild(deleteButton);
+
+        HostUI.questionList.appendChild(div);
+
+    });
+
+}
+
+/*=========================================
+    Add Question
+=========================================*/
+
+function addQuestion() {
+
+    const text = HostUI.questionInput.value;
+
+    const answer = Number(
+
+        HostUI.answerInput.value
+
+    );
+
+    if (!validateQuestion(text, answer)) {
+
+        alert("問題文と0〜100の答えを入力してください。");
+
+        return;
+
+    }
+
+    HostRoom.questions.push({
+
+        text: text.trim(),
+
+        answer: answer
+
+    });
+
+    saveHostRoom();
+
+    renderQuestionList();
+
+    HostUI.questionInput.value = "";
+
+    HostUI.answerInput.value = "";
+
+}
+
+
 
 /*
 =========================================
  Percent Balloon v2
  host.js
  Part3
- ゲーム制御（開始・進行・同期）
+ ボタンイベント・ゲーム開始・初期化
 =========================================
 */
 
@@ -241,73 +255,21 @@ function saveHostRoom() {
     Start Game
 =========================================*/
 
-function startHostGame() {
+function startGame() {
 
-    if (!HostRoom || HostRoom.questions.length === 0) {
+    if (HostRoom.questions.length === 0) {
+
+        alert("問題を1問以上追加してください。");
 
         return;
 
     }
 
+    HostRoom.currentQuestion = 0;
+
     HostRoom.state = "running";
 
-    HostRoom.currentQuestion = 0;
-
     saveHostRoom();
-
-    broadcastState();
-
-    location.href = "play.html";
-
-}
-
-/*=========================================
-    Next Question
-=========================================*/
-
-function nextHostQuestion() {
-
-    if (!HostRoom) return;
-
-    if (HostRoom.currentQuestion < HostRoom.questions.length - 1) {
-
-        HostRoom.currentQuestion++;
-
-    } else {
-
-        HostRoom.state = "finished";
-
-    }
-
-    saveHostRoom();
-
-    broadcastState();
-
-}
-
-/*=========================================
-    Reset Game
-=========================================*/
-
-function resetHostGame() {
-
-    if (!HostRoom) return;
-
-    HostRoom.state = "waiting";
-
-    HostRoom.currentQuestion = 0;
-
-    saveHostRoom();
-
-    broadcastState();
-
-}
-
-/*=========================================
-    Broadcast State (擬似同期)
-=========================================*/
-
-function broadcastState() {
 
     localStorage.setItem(
 
@@ -317,194 +279,60 @@ function broadcastState() {
 
     );
 
-    localStorage.setItem(
-
-        "hostState",
-
-        JSON.stringify({
-
-            state: HostRoom.state,
-
-            currentQuestion: HostRoom.currentQuestion
-
-        })
-
-    );
+    location.href = "play.html";
 
 }
 
 /*=========================================
-    Get Current Question
+    Save Button
 =========================================*/
 
-function getHostCurrentQuestion() {
+function saveRoom() {
 
-    return HostRoom.questions[HostRoom.currentQuestion] || null;
+    saveHostRoom();
+
+    alert("保存しました。");
 
 }
-`
-/*
-=========================================
- Percent Balloon v2
- host.js
- Part4
- UI連携・イベント・初期化
-=========================================
-*/
 
 /*=========================================
     Bind Events
 =========================================*/
 
-function bindHostEvents() {
+function bindEvents() {
 
-    const addBtn = document.getElementById("addBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const startBtn = document.getElementById("startBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const resetBtn = document.getElementById("resetBtn");
+    HostUI.addButton.onclick = addQuestion;
 
-    if (addBtn) addBtn.onclick = addQuestionHost;
+    HostUI.saveButton.onclick = saveRoom;
 
-    if (saveBtn) saveBtn.onclick = saveHostRoom;
+    HostUI.startButton.onclick = startGame;
 
-    if (startBtn) startBtn.onclick = startHostGame;
-
-    if (nextBtn) nextBtn.onclick = nextHostQuestion;
-
-    if (resetBtn) resetBtn.onclick = resetHostGame;
-
-}
-
-/*=========================================
-    Update UI Loop
-=========================================*/
-
-function updateHostUI() {
-
-    renderQuestionList();
-
-    renderRoomInfo();
-
-}
-
-/*=========================================
-    Render Question List (safe refresh)
-=========================================*/
-
-function renderQuestionListSafe() {
-
-    if (!HostRoom) return;
-
-    if (!HostUI.list) return;
-
-    HostUI.list.innerHTML = "";
-
-    HostRoom.questions.forEach((q, i) => {
-
-        const div = document.createElement("div");
-
-        div.className = "host-question";
-
-       div.textContent =
-    i + 1 + ". " +
-    q.text +
-    " (" + q.answer + "%)";
-
-        div.onclick = () => deleteQuestionHost(i);
-
-        HostUI.list.appendChild(div);
-
-    });
-
-}
-
-/*=========================================
-    Auto Sync (polling)
-=========================================*/
-
-function startHostSync() {
-
-    setInterval(() => {
-
-        const rooms = JSON.parse(
-
-            localStorage.getItem("rooms") || "{}"
-
-        );
-
-        const updated = rooms[HostRoom.id];
-
-        if (updated) {
-
-            HostRoom = updated;
-
-            updateHostUI();
-
-        }
-
-    }, 1000);
-
-}
-
-/*=========================================
-    Initialize Host App
-=========================================*/
-
-function initHostApp() {
-
-    initHost();
-
-    updateHostUI();
-
-    startHostSync();
-
-}
-
-/*=========================================
-    Start on Load
-=========================================*/
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    initHostApp();
-
-});
-
-function addQ() {
-    addQuestionHost();
-}
-
-function saveRoom() {
-    saveHostRoom();
-}
-if (homeBtn) {
-
-    homeBtn.onclick = () => {
+    HostUI.homeButton.onclick = function () {
 
         location.href = "index.html";
 
     };
 
 }
-if (saveBtn) {
 
-    saveBtn.onclick = () => {
+/*=========================================
+    Initialize App
+=========================================*/
 
-        saveHostRoom();
+document.addEventListener(
 
-        alert("保存しました");
+    "DOMContentLoaded",
 
-    };
+    function () {
 
-}
-function validateQuestion(text, answer) {
+        initHost();
 
-    return (
-        text.trim() !== "" &&
-        !isNaN(answer) &&
-        answer >= 0 &&
-        answer <= 100
-    );
+        bindEvents();
 
-}
+        renderQuestionList();
+
+    }
+
+);
+
+

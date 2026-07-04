@@ -1,0 +1,1547 @@
+/*==================================================
+ Percent Balloon v2
+ style.css
+ Part1
+ リセット・共通・ホーム画面
+==================================================*/
+
+/*=========================================
+    RESET
+=========================================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+
+    width:100%;
+    height:100%;
+
+    font-family:
+    "Yu Gothic",
+    "Meiryo",
+    sans-serif;
+
+    overflow:hidden;
+
+}
+
+/*=========================================
+    BODY
+=========================================*/
+
+body{
+
+    background:
+    linear-gradient(
+        180deg,
+        #55bbff 0%,
+        #93d8ff 45%,
+        #eefbff 100%
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#222;
+
+}
+
+/*=========================================
+    共通
+=========================================*/
+
+button,
+input{
+
+    font-family:inherit;
+
+}
+
+button{
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+button:hover{
+
+    transform:scale(1.05);
+
+}
+
+button:active{
+
+    transform:scale(.98);
+
+}
+
+input{
+
+    outline:none;
+
+}
+
+/*=========================================
+    HOME
+=========================================*/
+
+.homeContainer{
+
+    width:650px;
+
+    background:
+    rgba(255,255,255,.94);
+
+    border-radius:30px;
+
+    padding:60px;
+
+    box-shadow:
+    0 20px 60px
+    rgba(0,0,0,.25);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}
+
+/*=========================================
+    TITLE
+=========================================*/
+
+.title{
+
+    font-size:56px;
+
+    color:#0082df;
+
+    margin-bottom:55px;
+
+    font-weight:bold;
+
+    text-shadow:
+
+    0 3px 0 white,
+
+    0 6px 10px
+    rgba(0,0,0,.15);
+
+}
+
+/*=========================================
+    HOME BUTTON
+=========================================*/
+
+.homeButton{
+
+    width:320px;
+
+    height:80px;
+
+    border:none;
+
+    border-radius:18px;
+
+    margin:15px;
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    color:white;
+
+}
+
+/* 出題者 */
+
+#hostButton{
+
+    background:
+
+    linear-gradient(
+
+        180deg,
+
+        #ff6f6f,
+
+        #ff4343
+
+    );
+
+}
+
+#hostButton:hover{
+
+    background:
+
+    linear-gradient(
+
+        180deg,
+
+        #ff8080,
+
+        #ff4f4f
+
+    );
+
+}
+
+/* 回答者 */
+
+#playButton{
+
+    background:
+
+    linear-gradient(
+
+        180deg,
+
+        #3faeff,
+
+        #008cff
+
+    );
+
+}
+
+#playButton:hover{
+
+    background:
+
+    linear-gradient(
+
+        180deg,
+
+        #59bbff,
+
+        #1698ff
+
+    );
+
+}
+
+/*=========================================
+    共通コンテナ
+=========================================*/
+
+.hostContainer,
+.playContainer,
+.gameContainer{
+
+    width:1200px;
+
+    background:
+    rgba(255,255,255,.95);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    box-shadow:
+
+    0 20px 70px
+
+    rgba(0,0,0,.25);
+
+}
+
+/*=========================================
+    見出し
+=========================================*/
+
+h1{
+
+    text-align:center;
+
+    color:#0079d7;
+
+    font-size:48px;
+
+    margin-bottom:25px;
+
+}
+
+/*=========================================
+    戻るボタン
+=========================================*/
+
+.backButton{
+
+    position:fixed;
+
+    top:20px;
+
+    right:20px;
+
+    width:140px;
+
+    height:45px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:white;
+
+    color:#0079d7;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    border:2px solid #0079d7;
+
+}
+
+.backButton:hover{
+
+    background:#eaf6ff;
+
+}
+
+/*=========================================
+    雲（共通）
+=========================================*/
+
+.cloud{
+
+    position:absolute;
+
+    background:white;
+
+    border-radius:999px;
+
+    opacity:.9;
+
+}
+
+.cloud::before,
+.cloud::after{
+
+    content:"";
+
+    position:absolute;
+
+    background:white;
+
+    border-radius:50%;
+
+}
+
+.cloud::before{
+
+    width:60px;
+
+    height:60px;
+
+    left:20px;
+
+    top:-25px;
+
+}
+
+.cloud::after{
+
+    width:80px;
+
+    height:80px;
+
+    right:20px;
+
+    top:-35px;
+
+}
+
+/*=========================================
+    非表示
+=========================================*/
+
+.hidden{
+
+    display:none !important;
+
+}
+
+
+/*==================================================
+ Percent Balloon v2
+ style.css
+ Part2
+ 出題者画面・回答者画面
+==================================================*/
+
+/*=========================================
+    HOST
+=========================================*/
+
+#roomPanel{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+}
+
+#roomId{
+
+    margin-left:10px;
+
+    color:#ff5c5c;
+
+    font-size:34px;
+
+    letter-spacing:3px;
+
+}
+
+/*=========================================
+    QUESTION EDITOR
+=========================================*/
+
+#questionEditor{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:30px;
+
+    flex-wrap:wrap;
+
+}
+
+#questionInput{
+
+    width:520px;
+
+    height:55px;
+
+    padding:0 18px;
+
+    border-radius:12px;
+
+    border:2px solid #6fbfff;
+
+    font-size:22px;
+
+}
+
+#answerInput{
+
+    width:120px;
+
+    height:55px;
+
+    text-align:center;
+
+    border-radius:12px;
+
+    border:2px solid #6fbfff;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+}
+
+#questionInput:focus,
+#answerInput:focus{
+
+    border-color:#008cff;
+
+    box-shadow:
+    0 0 8px rgba(0,140,255,.35);
+
+}
+
+/*=========================================
+    HOST BUTTONS
+=========================================*/
+
+.hostButtons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+    margin-top:25px;
+
+}
+
+.hostButtons button,
+#addQuestionButton{
+
+    min-width:180px;
+
+    height:55px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #ffd85c,
+        #ffbf24
+    );
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    color:#333;
+
+}
+
+.hostButtons button:hover,
+#addQuestionButton:hover{
+
+    filter:brightness(1.05);
+
+}
+
+/*=========================================
+    QUESTION LIST
+=========================================*/
+
+#questionList{
+
+    width:100%;
+
+    height:360px;
+
+    overflow-y:auto;
+
+    margin-top:20px;
+
+    padding:15px;
+
+    background:#f8fcff;
+
+    border-radius:16px;
+
+    border:2px solid #cfe9ff;
+
+}
+
+.questionItem{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 18px;
+
+    margin-bottom:10px;
+
+    border-radius:12px;
+
+    background:white;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,.08);
+
+}
+
+.questionText{
+
+    font-size:20px;
+
+}
+
+.questionAnswer{
+
+    color:#007ad8;
+
+    font-weight:bold;
+
+    font-size:22px;
+
+}
+
+/*=========================================
+    PLAY
+=========================================*/
+
+#game{
+
+    width:1200px;
+
+    background:
+    rgba(255,255,255,.95);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    box-shadow:
+
+    0 20px 70px
+
+    rgba(0,0,0,.25);
+
+}
+
+/*=========================================
+    QUESTION BOX
+=========================================*/
+
+#questionBox{
+
+    width:100%;
+
+    min-height:170px;
+
+    border-radius:22px;
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #eef9ff,
+        #ffffff
+    );
+
+    border:2px solid #d7ecff;
+
+    padding:25px;
+
+}
+
+#questionTitle{
+
+    font-size:28px;
+
+    color:#007ad8;
+
+    font-weight:bold;
+
+    margin-bottom:20px;
+
+}
+
+#question{
+
+    text-align:center;
+
+    font-size:38px;
+
+    font-weight:bold;
+
+    line-height:1.5;
+
+}
+
+/*=========================================
+    ANSWER AREA
+=========================================*/
+
+#answerArea{
+
+    margin-top:30px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+#answerArea input{
+
+    width:170px;
+
+    height:70px;
+
+    border-radius:16px;
+
+    border:3px solid #007ad8;
+
+    background:white;
+
+    font-size:40px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+}
+
+#submitButton{
+
+    width:180px;
+
+    height:70px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #ffd85c,
+        #ffbf24
+    );
+
+    font-size:28px;
+
+    font-weight:bold;
+
+}
+
+#submitButton:hover{
+
+    filter:brightness(1.05);
+
+}
+
+/*=========================================
+    RESULT
+=========================================*/
+
+#resultArea{
+
+    margin-top:40px;
+
+    min-height:90px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+#differenceText{
+
+    font-size:36px;
+
+    color:#007ad8;
+
+    font-weight:bold;
+
+}
+
+#scoreText{
+
+    font-size:28px;
+
+    color:#444;
+
+    font-weight:bold;
+
+}
+
+
+/*==================================================
+ Percent Balloon v2
+ style.css
+ Part3
+ パーセントバー・マーカー
+==================================================*/
+
+/*=========================================
+    MAIN SCREEN
+=========================================*/
+
+#mainScreen{
+
+    width:100%;
+
+    margin-top:60px;
+
+}
+
+/*=========================================
+    PERCENT BAR
+=========================================*/
+
+#percentBar{
+
+    position:relative;
+
+    width:100%;
+
+    height:170px;
+
+}
+
+/*=========================================
+    BAR BACKGROUND
+=========================================*/
+
+#colorBar{
+
+    position:absolute;
+
+    left:0;
+
+    top:70px;
+
+    width:100%;
+
+    height:48px;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #d7d7d7,
+        #ababab
+    );
+
+    box-shadow:
+
+    inset 0 3px 10px
+    rgba(0,0,0,.25);
+
+}
+
+/*=========================================
+    COLOR BAR
+=========================================*/
+
+#fillBar{
+
+    width:0%;
+
+    height:100%;
+
+    border-radius:30px;
+
+    background:
+
+    linear-gradient(
+        90deg,
+
+        #00b8ff 0%,
+
+        #00ff95 30%,
+
+        #ffe600 65%,
+
+        #ff9800 85%,
+
+        #ff4d4d 100%
+
+    );
+
+}
+
+/*=========================================
+    TICKS
+=========================================*/
+
+#tickContainer{
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:170px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    z-index:5;
+
+}
+
+/*=========================================
+    TICK
+=========================================*/
+
+.tick{
+
+    position:relative;
+
+    width:1px;
+
+    height:170px;
+
+}
+
+/*=========================================
+    TICK LINE
+=========================================*/
+
+.tick::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:-1px;
+
+    bottom:52px;
+
+    width:2px;
+
+    height:16px;
+
+    background:white;
+
+}
+
+.tick.major::before{
+
+    height:32px;
+
+}
+
+/*=========================================
+    NUMBER
+=========================================*/
+
+.tick span{
+
+    position:absolute;
+
+    top:0;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    color:#006fd0;
+
+}
+
+/*=========================================
+    MARKER LAYER
+=========================================*/
+
+#markerLayer{
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:100%;
+
+    height:170px;
+
+    pointer-events:none;
+
+    z-index:30;
+
+}
+
+/*=========================================
+    CURRENT MARKER
+=========================================*/
+
+.currentMarker{
+
+    position:absolute;
+
+    top:94px;
+
+    width:34px;
+
+    height:34px;
+
+    border-radius:50%;
+
+    transform:translate(-50%,-50%);
+
+    background:#ff4141;
+
+    border:4px solid white;
+
+    box-shadow:
+
+    0 0 12px
+    rgba(0,0,0,.35);
+
+}
+
+/*=========================================
+    ANSWER MARKER
+=========================================*/
+
+.answerMarker{
+
+    position:absolute;
+
+    top:8px;
+
+    transform:translateX(-50%);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}
+
+/*=========================================
+    CORRECT MARKER
+=========================================*/
+
+.correctMarker{
+
+    position:absolute;
+
+    top:8px;
+
+    transform:translateX(-50%);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}
+
+/*=========================================
+    TRIANGLE
+=========================================*/
+
+.answerMarker .triangle,
+.correctMarker .triangle{
+
+    width:0;
+
+    height:0;
+
+    border-left:12px solid transparent;
+
+    border-right:12px solid transparent;
+
+    border-top:20px solid;
+
+}
+
+.answerMarker .triangle{
+
+    border-top-color:#ff9800;
+
+}
+
+.correctMarker .triangle{
+
+    border-top-color:#00b84f;
+
+}
+
+/*=========================================
+    VALUE
+=========================================*/
+
+.answerMarker .value,
+.correctMarker .value{
+
+    margin-top:6px;
+
+    min-width:70px;
+
+    padding:4px 10px;
+
+    text-align:center;
+
+    border-radius:10px;
+
+    background:white;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    box-shadow:
+
+    0 2px 8px
+    rgba(0,0,0,.25);
+
+}
+
+.correctMarker .value{
+
+    color:#009245;
+
+}
+
+.answerMarker .value{
+
+    color:#ff7a00;
+
+}
+
+/*=========================================
+    BAR GLOW
+=========================================*/
+
+#fillBar{
+
+    box-shadow:
+
+    0 0 12px
+    rgba(0,190,255,.6);
+
+}
+
+/*=========================================
+    DISABLED
+=========================================*/
+
+button:disabled{
+
+    opacity:.5;
+
+    cursor:not-allowed;
+
+}
+
+input:disabled{
+
+    background:#efefef;
+
+}
+
+
+/*==================================================
+ Percent Balloon v2
+ style.css
+ Part4
+ アニメーション・演出・風船用
+==================================================*/
+
+/*=========================================
+    FADE
+=========================================*/
+
+.fadeIn{
+    animation:fadeIn .4s ease;
+}
+
+.fadeOut{
+    animation:fadeOut .4s ease forwards;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+
+}
+
+@keyframes fadeOut{
+
+    from{
+        opacity:1;
+    }
+
+    to{
+        opacity:0;
+    }
+
+}
+
+/*=========================================
+    POP
+=========================================*/
+
+.pop{
+
+    animation:pop .25s;
+
+}
+
+@keyframes pop{
+
+    0%{
+
+        transform:scale(.8);
+
+    }
+
+    60%{
+
+        transform:scale(1.15);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+/*=========================================
+    SHAKE
+=========================================*/
+
+.shake{
+
+    animation:shake .35s;
+
+}
+
+@keyframes shake{
+
+    0%{transform:translateX(0);}
+
+    15%{transform:translateX(-8px);}
+
+    30%{transform:translateX(8px);}
+
+    45%{transform:translateX(-6px);}
+
+    60%{transform:translateX(6px);}
+
+    75%{transform:translateX(-3px);}
+
+    100%{transform:translateX(0);}
+
+}
+
+/*=========================================
+    FLASH
+=========================================*/
+
+.flash{
+
+    animation:flash .25s 3;
+
+}
+
+@keyframes flash{
+
+    50%{
+
+        opacity:.2;
+
+    }
+
+}
+
+/*=========================================
+    GLOW
+=========================================*/
+
+.glow{
+
+    animation:glow 1s infinite alternate;
+
+}
+
+@keyframes glow{
+
+    from{
+
+        box-shadow:
+
+        0 0 8px rgba(255,255,255,.3);
+
+    }
+
+    to{
+
+        box-shadow:
+
+        0 0 25px rgba(255,255,255,.9);
+
+    }
+
+}
+
+/*=========================================
+    BAR GLOW
+=========================================*/
+
+.barGlow{
+
+    animation:barGlow .4s infinite alternate;
+
+}
+
+@keyframes barGlow{
+
+    from{
+
+        filter:brightness(1);
+
+    }
+
+    to{
+
+        filter:brightness(1.3);
+
+    }
+
+}
+
+/*=========================================
+    RESULT
+=========================================*/
+
+.resultShow{
+
+    animation:resultShow .5s;
+
+}
+
+@keyframes resultShow{
+
+    from{
+
+        transform:translateY(20px);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:translateY(0);
+
+        opacity:1;
+
+    }
+
+}
+
+/*=========================================
+    ZOOM
+=========================================*/
+
+.zoom{
+
+    animation:zoom .3s;
+
+}
+
+@keyframes zoom{
+
+    from{
+
+        transform:scale(.9);
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+    }
+
+}
+
+/*=========================================
+    CLOUD
+=========================================*/
+
+.cloudMove{
+
+    animation:cloudMove 90s linear infinite;
+
+}
+
+@keyframes cloudMove{
+
+    from{
+
+        transform:translateX(-300px);
+
+    }
+
+    to{
+
+        transform:translateX(calc(100vw + 300px));
+
+    }
+
+}
+
+/*=========================================
+    CURRENT MARKER
+=========================================*/
+
+.currentMarker.move{
+
+    transition:left .05s linear;
+
+}
+
+/*=========================================
+    TENSION MODE
+=========================================*/
+
+.tension #fillBar{
+
+    box-shadow:
+
+    0 0 20px rgba(255,220,0,.9),
+
+    0 0 35px rgba(255,170,0,.6);
+
+}
+
+.tension .currentMarker{
+
+    animation:pulse .25s infinite alternate;
+
+}
+
+@keyframes pulse{
+
+    from{
+
+        transform:translate(-50%,-50%) scale(1);
+
+    }
+
+    to{
+
+        transform:translate(-50%,-50%) scale(1.2);
+
+    }
+
+}
+
+/*=========================================
+    SUCCESS
+=========================================*/
+
+.success{
+
+    animation:success .5s;
+
+}
+
+@keyframes success{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    30%{
+
+        transform:scale(1.25);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+/*=========================================
+    FUTURE BALLOON
+=========================================*/
+
+.balloon{
+
+    display:none;
+
+}
+
+.balloon.enable{
+
+    display:block;
+
+}
+
+.balloonCanvas{
+
+    width:100%;
+
+    height:400px;
+
+}
+
+/*=========================================
+    UTILITY
+=========================================*/
+
+.noSelect{
+
+    user-select:none;
+
+}
+
+.pointerNone{
+
+    pointer-events:none;
+
+}
+
+.center{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}

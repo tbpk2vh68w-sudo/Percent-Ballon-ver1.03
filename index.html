@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percent Balloon</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="homeContainer">
+
+        <h1 class="title">
+            Percent Balloon
+        </h1>
+
+        <button id="hostButton" class="homeButton">
+            出題者モード
+        </button>
+
+        <button id="playButton" class="homeButton">
+            回答者モード
+        </button>
+
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+
+    <script>
+
+        document
+            .getElementById("hostButton")
+            .onclick = () => location.href = "host.html";
+
+        document
+            .getElementById("playButton")
+            .onclick = () => location.href = "play.html";
+
+    </script>
+
+</body>
+
+</html>

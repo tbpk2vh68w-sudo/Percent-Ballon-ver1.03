@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Host</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="hostContainer">
+
+    <h1>出題者モード</h1>
+
+    <div id="roomPanel">
+
+        <p>
+
+            ルームID：
+
+            <span id="roomId">
+
+            </span>
+
+        </p>
+
+    </div>
+
+    <div id="questionEditor">
+
+        <input
+
+            id="questionInput"
+
+            type="text"
+
+            placeholder="問題文"
+
+        >
+
+        <input
+
+            id="answerInput"
+
+            type="number"
+
+            min="0"
+
+            max="100"
+
+            placeholder="答え"
+
+        >
+
+        <button id="addQuestionButton">
+
+            問題追加
+
+        </button>
+
+    </div>
+
+    <div id="questionList">
+
+    </div>
+
+    <div class="hostButtons">
+
+        <button id="saveButton">
+
+            保存
+
+        </button>
+
+        <button id="startButton">
+
+            ゲーム開始
+
+        </button>
+
+    </div>
+
+    <button
+
+        id="homeButton"
+
+        class="backButton"
+
+    >
+
+        ホームへ戻る
+
+    </button>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/room.js"></script>
+<script src="js/host.js"></script>
+
+</body>
+
+</html>

@@ -1,4 +1,3 @@
-```javascript id="ani_p1_01"
 /*
 =========================================
  Percent Balloon v2
@@ -133,8 +132,6 @@ function updateAnimation() {
     // この後 Part2〜で中身を追加
 
 }
-```
-```javascript id="ani_p2_01"
 /*
 =========================================
  Percent Balloon v2
@@ -213,8 +210,6 @@ function triggerChaos() {
     chaosPhase();
 
 }
-```
-```javascript id="ani_p3_01"
 /*
 =========================================
  Percent Balloon v2
@@ -313,8 +308,6 @@ function enterDrift() {
     driftPhase();
 
 }
-```
-```javascript id="ani_p4_01"
 /*
 =========================================
  Percent Balloon v2
@@ -395,8 +388,6 @@ function enterTension() {
     tensionPhase();
 
 }
-```
-```javascript id="ani_p5_01"
 /*
 =========================================
  Percent Balloon v2
@@ -562,4 +553,3 @@ function updateAnimation() {
     }
 
 }
-```

@@ -1,4 +1,4 @@
-```javascript
+javascript
 /*
 =========================================
  Percent Balloon v2
@@ -181,4 +181,3 @@ const GameState={
     FINISH:"finish"
 
 };
-```

@@ -1,4 +1,4 @@
-```javascript
+javascript
 /*
 =========================================
  Percent Balloon v2
@@ -167,8 +167,7 @@ function getGame() {
     return Game;
 
 }
-```
-```javascript
+javascript
 /*
 =========================================
  Percent Balloon v2
@@ -335,8 +334,6 @@ function getCurrentGameQuestion() {
     return getCurrentQuestion();
 
 }
-```
-```javascript id="x9m4pb"
 /*
 =========================================
  Percent Balloon v2
@@ -505,8 +502,6 @@ function resetAnswer() {
     Game.difference = null;
 
 }
-```
-```javascript id="n8vz4m"
 /*
 =========================================
  Percent Balloon v2
@@ -658,8 +653,7 @@ function resetScore() {
     Game.bestScore = 0;
 
 }
-```
-```javascript
+javascript
 /*
 =========================================
  Percent Balloon v2
@@ -842,4 +836,3 @@ function loadGame() {
 =========================================*/
 
 initializeGame();
-```

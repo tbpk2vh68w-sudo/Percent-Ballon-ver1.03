@@ -1,4 +1,3 @@
-```javascript id="ui_p1_01"
 /*
 =========================================
  Percent Balloon v2
@@ -163,8 +162,6 @@ function clearMarkers() {
     UI.markerLayer.innerHTML = "";
 
 }
-```
-```javascript id="ui_p2_01"
 /*
 =========================================
  Percent Balloon v2
@@ -287,7 +284,6 @@ function clampPercent(value) {
     return Math.max(0, Math.min(100, value));
 
 }
-```
 
 /*
 =========================================
@@ -411,8 +407,6 @@ function setPlayingUI() {
     setSubmitButtonState(true);
 
 }
-
-```javascript id="ui_p4_01"
 /*
 =========================================
  Percent Balloon v2
@@ -557,4 +551,4 @@ function initUI() {
     setWaitingUI();
 
 }
-```
+

@@ -1,12 +1,9 @@
-```javascript id="play_p1_01"
-/*
-=========================================
+/*=========================================
  Percent Balloon v2
  play.js
  Part1
- 初期化・ルーム接続
-=========================================
-*/
+初期化・ルーム接続
+=========================================*/
 
 /*=========================================
     Play State
@@ -71,8 +68,6 @@ function initPlay() {
     setWaitingUI();
 
 }
-```
-```javascript id="play_p2_01"
 /*
 =========================================
  Percent Balloon v2
@@ -163,8 +158,6 @@ function onPlaySubmit(value) {
     startAnimation(Play.question.answer);
 
 }
-```
-```javascript id="play_p3_01"
 /*
 =========================================
  Percent Balloon v2
@@ -267,8 +260,6 @@ function handleSubmitAnswer(value) {
     startAnimation(Play.question.answer);
 
 }
-```
-```javascript id="play_p4_01"
 /*
 =========================================
  Percent Balloon v2
@@ -333,8 +324,6 @@ function hookAnimationEvents() {
     window.onAnimationComplete = onAnimationCompletePlay;
 
 }
-```
-```javascript id="play_p5_01"
 /*
 =========================================
  Percent Balloon v2
@@ -479,4 +468,3 @@ document.addEventListener("DOMContentLoaded", () => {
     initPlayApp();
 
 });
-```

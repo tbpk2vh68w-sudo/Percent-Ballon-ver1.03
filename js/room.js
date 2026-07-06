@@ -1,4 +1,3 @@
-```javascript
 /*
 =========================================
  Percent Balloon v2
@@ -205,8 +204,6 @@ function getRoom() {
     return Room;
 
 }
-```
-```javascript id="5wqk8p"
 /*
 =========================================
  Percent Balloon v2
@@ -389,8 +386,6 @@ function clearQuestions() {
     saveRoom();
 
 }
-```
-```javascript
 /*
 =========================================
  Percent Balloon v2
@@ -582,8 +577,6 @@ function hasQuestions() {
     return Room.questions.length > 0;
 
 }
-```
-```javascript
 /*
 =========================================
  Percent Balloon v2
@@ -764,4 +757,3 @@ function initializeRoom() {
     Room = null;
 
 }
-```

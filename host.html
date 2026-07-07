@@ -8,10 +8,11 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Host</title>
+    <title>ルーム管理</title>
 
-    <link rel="stylesheet"
-          href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css">
 
 </head>
 
@@ -19,73 +20,39 @@
 
 <div class="hostContainer">
 
-    <h1>出題者モード</h1>
+    <h1>
 
-    <div id="roomPanel">
+        ルーム管理
 
-        <p>
+    </h1>
 
-            ルームID：
-
-            <span id="roomId">
-
-            </span>
-
-        </p>
-
-    </div>
-
-    <div id="questionEditor">
+    <div class="roomCreateArea">
 
         <input
 
-            id="questionInput"
+            id="roomNameInput"
 
             type="text"
 
-            placeholder="問題文"
+            placeholder="ルーム名"
 
         >
 
-        <input
+        <button id="createRoomButton">
 
-            id="answerInput"
-
-            type="number"
-
-            min="0"
-
-            max="100"
-
-            placeholder="答え"
-
-        >
-
-        <button id="addQuestionButton">
-
-            問題追加
+            新しい部屋を作成
 
         </button>
 
     </div>
 
-    <div id="questionList">
+    <h2>
 
-    </div>
+        保存済みルーム
 
-    <div class="hostButtons">
+    </h2>
 
-        <button id="saveButton">
-
-            保存
-
-        </button>
-
-        <button id="startButton">
-
-            ゲーム開始
-
-        </button>
+    <div id="roomList">
 
     </div>
 

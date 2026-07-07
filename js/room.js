@@ -757,3 +757,165 @@ function initializeRoom() {
     Room = null;
 
 }
+
+/*
+=========================================
+ Percent Balloon v2
+ room.js
+ Part1
+ ルーム取得・保存
+=========================================
+*/
+
+/*=========================================
+    Get Rooms
+=========================================*/
+
+function getRooms() {
+
+    return JSON.parse(
+
+        localStorage.getItem("rooms") || "{}"
+
+    );
+
+}
+
+/*=========================================
+    Save Rooms
+=========================================*/
+
+function saveRooms(rooms) {
+
+    localStorage.setItem(
+
+        "rooms",
+
+        JSON.stringify(rooms)
+
+    );
+
+}
+
+/*=========================================
+    Get Room
+=========================================*/
+
+function getRoom(roomId) {
+
+    const rooms = getRooms();
+
+    return rooms[roomId] || null;
+
+}
+
+/*=========================================
+    Save Room
+=========================================*/
+
+function saveRoomData(room) {
+
+    const rooms = getRooms();
+
+    room.updatedAt = Date.now();
+
+    rooms[room.id] = room;
+
+    saveRooms(rooms);
+
+}
+
+/*
+=========================================
+ Percent Balloon v2
+ room.js
+ Part2
+ ルーム作成・削除
+=========================================
+*/
+
+/*=========================================
+    Generate Room ID
+=========================================*/
+
+function generateRoomId() {
+
+    const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    let id = "";
+
+    const rooms = getRooms();
+
+    do {
+
+        id = "";
+
+        for (let i = 0; i < 6; i++) {
+
+            id += chars.charAt(
+
+                Math.floor(
+
+                    Math.random() * chars.length
+
+                )
+
+            );
+
+        }
+
+    } while (rooms[id]);
+
+    return id;
+
+}
+
+/*=========================================
+    Create Room
+=========================================*/
+
+function createRoom(roomName) {
+
+    const rooms = getRooms();
+
+    const room = {
+
+        id: generateRoomId(),
+
+        name: roomName,
+
+        questions: [],
+
+        currentQuestion: 0,
+
+        state: "waiting",
+
+        createdAt: Date.now(),
+
+        updatedAt: Date.now()
+
+    };
+
+    rooms[room.id] = room;
+
+    saveRooms(rooms);
+
+    return room;
+
+}
+
+/*=========================================
+    Delete Room
+=========================================*/
+
+function deleteRoom(roomId) {
+
+    const rooms = getRooms();
+
+    delete rooms[roomId];
+
+    saveRooms(rooms);
+
+}
+

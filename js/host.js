@@ -2,296 +2,39 @@
 =========================================
  Percent Balloon v2
  host.js
- Part1
- 初期化・DOM・ルーム作成
+ ルーム管理
 =========================================
 */
 
-/*=========================================
-    DOM
-=========================================*/
-
 const HostUI = {
 
-    roomId: document.getElementById("roomId"),
+    roomNameInput: document.getElementById("roomNameInput"),
 
-    questionInput: document.getElementById("questionInput"),
+    roomList: document.getElementById("roomList"),
 
-    answerInput: document.getElementById("answerInput"),
-
-    questionList: document.getElementById("questionList"),
-
-    addButton: document.getElementById("addQuestionButton"),
-
-    saveButton: document.getElementById("saveButton"),
-
-    startButton: document.getElementById("startButton"),
+    createRoomButton: document.getElementById("createRoomButton"),
 
     homeButton: document.getElementById("homeButton")
 
 };
 
 /*=========================================
-    Room
-=========================================*/
-
-let HostRoom = null;
-
-/*=========================================
-    Generate Room ID
-=========================================*/
-
-function generateRoomId() {
-
-    return Math.random()
-        .toString(36)
-        .substring(2, 8)
-        .toUpperCase();
-
-}
-
-/*=========================================
-    Create Room
-=========================================*/
-
-function createRoom() {
-
-    const rooms = JSON.parse(
-
-        localStorage.getItem("rooms") || "{}"
-
-    );
-
-    let id;
-
-    do {
-
-        id = generateRoomId();
-
-    } while (rooms[id]);
-
-    HostRoom = {
-
-        id: id,
-
-        questions: [],
-
-        currentQuestion: 0,
-
-        state: "waiting"
-
-    };
-
-    rooms[id] = HostRoom;
-
-    localStorage.setItem(
-
-        "rooms",
-
-        JSON.stringify(rooms)
-
-    );
-
-}
-
-/*=========================================
-    Save Room
-=========================================*/
-
-function saveHostRoom() {
-
-    const rooms = JSON.parse(
-
-        localStorage.getItem("rooms") || "{}"
-
-    );
-
-    rooms[HostRoom.id] = HostRoom;
-
-    localStorage.setItem(
-
-        "rooms",
-
-        JSON.stringify(rooms)
-
-    );
-
-}
-
-/*=========================================
     Initialize
 =========================================*/
 
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    initHost
+
+);
+
 function initHost() {
 
-    createRoom();
+    renderRoomList();
 
-    HostUI.roomId.textContent = HostRoom.id;
-
-}
-
-
-/*
-=========================================
- Percent Balloon v2
- host.js
- Part2
- 問題追加・一覧表示
-=========================================
-*/
-
-/*=========================================
-    Validate
-=========================================*/
-
-function validateQuestion(text, answer) {
-
-    if (text.trim() === "") return false;
-
-    if (isNaN(answer)) return false;
-
-    if (answer < 0 || answer > 100) return false;
-
-    return true;
-
-}
-
-/*=========================================
-    Render Question List
-=========================================*/
-
-function renderQuestionList() {
-
-    HostUI.questionList.innerHTML = "";
-
-    HostRoom.questions.forEach((q, i) => {
-
-        const div = document.createElement("div");
-
-        div.className = "hostQuestion";
-
-        div.textContent =
-            (i + 1) +
-            ". " +
-            q.text +
-            " (" +
-            q.answer +
-            "%)";
-
-        const deleteButton = document.createElement("button");
-
-        deleteButton.textContent = "削除";
-
-        deleteButton.onclick = function () {
-
-            HostRoom.questions.splice(i, 1);
-
-            saveHostRoom();
-
-            renderQuestionList();
-
-        };
-
-        div.appendChild(deleteButton);
-
-        HostUI.questionList.appendChild(div);
-
-    });
-
-}
-
-/*=========================================
-    Add Question
-=========================================*/
-
-function addQuestion() {
-
-    const text = HostUI.questionInput.value;
-
-    const answer = Number(
-
-        HostUI.answerInput.value
-
-    );
-
-    if (!validateQuestion(text, answer)) {
-
-        alert("問題文と0〜100の答えを入力してください。");
-
-        return;
-
-    }
-
-    HostRoom.questions.push({
-
-        text: text.trim(),
-
-        answer: answer
-
-    });
-
-    saveHostRoom();
-
-    renderQuestionList();
-
-    HostUI.questionInput.value = "";
-
-    HostUI.answerInput.value = "";
-
-}
-
-
-
-/*
-=========================================
- Percent Balloon v2
- host.js
- Part3
- ボタンイベント・ゲーム開始・初期化
-=========================================
-*/
-
-/*=========================================
-    Start Game
-=========================================*/
-
-function startGame() {
-
-    if (HostRoom.questions.length === 0) {
-
-        alert("問題を1問以上追加してください。");
-
-        return;
-
-    }
-
-    HostRoom.currentQuestion = 0;
-
-    HostRoom.state = "running";
-
-    saveHostRoom();
-
-    localStorage.setItem(
-
-        "currentRoomId",
-
-        HostRoom.id
-
-    );
-
-    location.href = "play.html";
-
-}
-
-/*=========================================
-    Save Button
-=========================================*/
-
-function saveRoom() {
-
-    saveHostRoom();
-
-    alert("保存しました。");
+    bindEvents();
 
 }
 
@@ -301,11 +44,7 @@ function saveRoom() {
 
 function bindEvents() {
 
-    HostUI.addButton.onclick = addQuestion;
-
-    HostUI.saveButton.onclick = saveRoom;
-
-    HostUI.startButton.onclick = startGame;
+    HostUI.createRoomButton.onclick = createRoom;
 
     HostUI.homeButton.onclick = function () {
 
@@ -315,24 +54,143 @@ function bindEvents() {
 
 }
 
-/*=========================================
-    Initialize App
-=========================================*/
+HostUI.createRoomButton.onclick = function () {
 
-document.addEventListener(
+    const roomName =
 
-    "DOMContentLoaded",
+        HostUI.roomNameInput.value.trim();
 
-    function () {
+    if (roomName === "") {
 
-        initHost();
+        alert("ルーム名を入力してください。");
 
-        bindEvents();
-
-        renderQuestionList();
+        return;
 
     }
 
-);
+    createRoom(roomName);
 
+    HostUI.roomNameInput.value = "";
+
+    renderRoomList();
+
+};
+
+function renderRoomList() {
+
+    const rooms = getRooms();
+
+    HostUI.roomList.innerHTML = "";
+
+    Object.values(rooms).forEach(function (room) {
+
+        const card = document.createElement("div");
+
+        card.className = "roomCard";
+
+        const title = document.createElement("h3");
+
+        title.textContent = room.name;
+
+        const id = document.createElement("p");
+
+        id.textContent =
+
+            "ルームID : " + room.id;
+
+        const editButton =
+
+            document.createElement("button");
+
+        editButton.textContent = "編集";
+
+        editButton.onclick = function () {
+
+            localStorage.setItem(
+
+                "editingRoom",
+
+                room.id
+
+            );
+
+            location.href =
+
+                "host_editor.html";
+
+        };
+
+        const deleteButton =
+
+            document.createElement("button");
+
+        deleteButton.textContent = "削除";
+
+        deleteButton.onclick = function () {
+
+            if (
+
+                confirm(
+
+                    "このルームを削除しますか？"
+
+                )
+
+            ) {
+
+                deleteRoom(room.id);
+
+                renderRoomList();
+
+            }
+
+        };
+
+        card.appendChild(title);
+
+        card.appendChild(id);
+
+        card.appendChild(editButton);
+
+        card.appendChild(deleteButton);
+
+        HostUI.roomList.appendChild(card);
+
+    });
+
+}
+
+
+
+/*=========================================
+    Get Room
+=========================================*/
+
+function getRoom(roomId) {
+
+    const rooms = JSON.parse(
+
+        localStorage.getItem("rooms") || "{}"
+
+    );
+
+    return rooms[roomId] || null;
+
+}
+
+/*=========================================
+    Get All Rooms
+=========================================*/
+
+function getAllRooms() {
+
+    const rooms = JSON.parse(
+
+        localStorage.getItem("rooms") || "{}"
+
+    );
+
+    return Object.values(rooms);
+
+}
 

@@ -5,49 +5,6 @@
 初期化・ルーム接続
 =========================================*/
 
-/*=========================================
-    Play State
-=========================================*/
-
-let Play = {
-
-    room: null,
-
-    question: null,
-
-    initialized: false
-
-};
-
-/*=========================================
-    Load Room
-=========================================*/
-
-function loadPlayRoom() {
-
-    const rooms = JSON.parse(
-
-        localStorage.getItem("rooms") || "{}"
-
-    );
-
-    const roomId = prompt("ルームIDを入力してください");
-
-    if (!rooms[roomId]) {
-
-        alert("ルームが見つかりません");
-
-        location.href = "index.html";
-
-        return;
-
-    }
-
-    Play.room = rooms[roomId];
-
-    localStorage.setItem("currentRoomId", roomId);
-
-}
 
 /*=========================================
     Initialize Play
@@ -83,11 +40,21 @@ function initPlay() {
 
 function getCurrentQuestion() {
 
-    if (!Play.room) return null;
+    if (!Play.room) {
 
-    const index = Play.room.currentQuestion || 0;
+        return null;
 
-    return Play.room.questions[index] || null;
+    }
+
+    if (!Play.room.questions) {
+
+        return null;
+
+    }
+
+    return Play.room.questions[
+        Play.room.currentQuestion
+    ] || null;
 
 }
 
@@ -97,33 +64,23 @@ function getCurrentQuestion() {
 
 function showPlayQuestion() {
 
-    const q = getCurrentQuestion();
+    const question = getCurrentQuestion();
 
-    if (!q) return;
+    if (!question) {
 
-    Play.question = q;
+        return;
 
-    showQuestionUI(q);
+    }
 
-    setSubmitButtonState(true);
+    Play.question = question;
 
-}
+    showQuestionUI(question);
 
-/*=========================================
-    Start Game Flow
-=========================================*/
+    if (typeof setSubmitButtonState === "function") {
 
-function startPlayGame() {
+        setSubmitButtonState(true);
 
-    if (!Play.room) return;
-
-    Play.room.state = "running";
-
-    savePlayRoom();
-
-    showPlayQuestion();
-
-    resetUI();
+    }
 
 }
 
@@ -144,18 +101,66 @@ function resetPlayState() {
 }
 
 /*=========================================
-    Submit Answer Handler
+    Start Game
+=========================================*/
+
+function startPlayGame() {
+
+    if (!Play.room) {
+
+        return;
+
+    }
+
+    Play.room.state = "running";
+
+    savePlayRoom();
+
+    showPlayQuestion();
+
+    resetUI();
+
+}
+
+/*=========================================
+    Submit Answer
 =========================================*/
 
 function onPlaySubmit(value) {
 
-    if (!Play.question) return;
+    if (!Play.question) {
+
+        return;
+
+    }
+
+    value = Number(value);
+
+    if (isNaN(value)) {
+
+        alert("0～100の数値を入力してください。");
+
+        return;
+
+    }
+
+    if (value < 0 || value > 100) {
+
+        alert("0～100の数値を入力してください。");
+
+        return;
+
+    }
 
     Play.userAnswer = value;
 
     showAnswerMarkerUI(value);
 
-    startAnimation(Play.question.answer);
+    startAnimation(
+
+        Play.question.answer
+
+    );
 
 }
 /*
@@ -419,31 +424,6 @@ function getRank(score) {
 
 }
 
-/*=========================================
-    Save Room (Play Side)
-=========================================*/
-
-function savePlayRoom() {
-
-    const rooms = JSON.parse(
-
-        localStorage.getItem("rooms") || "{}"
-
-    );
-
-    if (!Play.room) return;
-
-    rooms[Play.room.id] = Play.room;
-
-    localStorage.setItem(
-
-        "rooms",
-
-        JSON.stringify(rooms)
-
-    );
-
-}
 
 /*=========================================
     Initialize Play App
@@ -460,11 +440,112 @@ function initPlayApp() {
 }
 
 /*=========================================
-    Auto Start
+    Initialize Play
 =========================================*/
 
-document.addEventListener("DOMContentLoaded", () => {
+function initPlay() {
 
-    initPlayApp();
+    loadPlayRoom();
 
-});
+    showPlayQuestion();
+
+    const submitButton =
+
+        document.getElementById("submitButton");
+
+    if (submitButton) {
+
+        submitButton.onclick = function () {
+
+            onPlaySubmit(
+
+                document.getElementById("answerInput").value
+
+            );
+
+        };
+
+    }
+
+    const homeButton =
+
+        document.getElementById("homeButton");
+
+    if (homeButton) {
+
+        homeButton.onclick = function () {
+
+            location.href = "index.html";
+
+        };
+
+    }
+
+}
+
+/*=========================================
+    Start
+=========================================*/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    initPlay
+
+);
+
+/*
+=========================================
+ Percent Balloon v2
+ play.js
+ Part1
+ ルーム読込
+=========================================
+*/
+
+const Play = {
+
+    room: null,
+
+    question: null,
+
+    userAnswer: null
+
+};
+
+/*=========================================
+    Load Room
+=========================================*/
+
+function loadPlayRoom() {
+
+    const roomId = localStorage.getItem(
+
+        "currentRoomId"
+
+    );
+
+    Play.room = getRoom(roomId);
+
+    if (!Play.room) {
+
+        alert("ルームが見つかりません。");
+
+        location.href = "index.html";
+
+        return;
+
+    }
+
+}
+
+/*=========================================
+    Save Room
+=========================================*/
+
+function savePlayRoom() {
+
+    saveRoomData(Play.room);
+
+}

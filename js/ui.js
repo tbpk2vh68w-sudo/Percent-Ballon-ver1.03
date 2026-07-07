@@ -2,8 +2,7 @@
 =========================================
  Percent Balloon v2
  ui.js
- Part1
- DOM・初期化・基本UI
+ 完成版 Part1
 =========================================
 */
 
@@ -13,113 +12,149 @@
 
 const UI = {
 
-    question: document.getElementById("question"),
+    questionTitle:
+        document.getElementById("questionTitle"),
 
-    questionTitle: document.getElementById("questionTitle"),
+    question:
+        document.getElementById("question"),
 
-    answerInput: document.getElementById("answerInput"),
+    answerInput:
+        document.getElementById("answerInput"),
 
-    submitButton: document.getElementById("submitButton"),
+    submitButton:
+        document.getElementById("submitButton"),
 
-    fillBar: document.getElementById("fillBar"),
+    currentMarker:
+        document.getElementById("currentMarker"),
 
-    markerLayer: document.getElementById("markerLayer"),
+    answerMarker:
+        document.getElementById("answerMarker"),
 
-    tickContainer: document.getElementById("tickContainer"),
+    differenceText:
+        document.getElementById("differenceText"),
 
-    differenceText: document.getElementById("differenceText"),
-
-    scoreText: document.getElementById("scoreText")
+    scoreText:
+        document.getElementById("scoreText")
 
 };
 
 /*=========================================
-    Initialize UI
+    Question
 =========================================*/
 
-function initializeUI() {
+function showQuestionUI(question) {
 
-    createTicks();
+    if (!UI.question) return;
 
-    bindEvents();
-
-    setHomeButton();
-
-    resetUI();
+    UI.question.textContent = question.text;
 
 }
 
 /*=========================================
-    Create 0-100 ticks
+    Question Title
 =========================================*/
 
-function createTicks() {
+function showQuestionTitleUI(title) {
 
-    if (!UI.tickContainer) return;
+    if (!UI.questionTitle) return;
 
-    UI.tickContainer.innerHTML = "";
-
-    for (let i = 0; i <= 100; i++) {
-
-        const tick = document.createElement("div");
-
-        tick.className = "tick";
-
-        if (i % 10 === 0) {
-
-            tick.classList.add("major");
-
-            const label = document.createElement("span");
-
-            label.textContent = i;
-
-            tick.appendChild(label);
-
-        }
-
-        UI.tickContainer.appendChild(tick);
-
-    }
+    UI.questionTitle.textContent = title;
 
 }
 
 /*=========================================
-    Bind Events
+    Submit Button
 =========================================*/
 
-function bindEvents() {
+function setSubmitButtonState(enable) {
 
     if (!UI.submitButton) return;
 
-    UI.submitButton.addEventListener("click", () => {
-
-        const value = Number(UI.answerInput.value);
-
-        if (isNaN(value)) return;
-
-        setUserAnswer(value);
-
-        onSubmitAnswer(value);
-
-    });
+    UI.submitButton.disabled = !enable;
 
 }
 
 /*=========================================
-    Home Button
+    Reset Input
 =========================================*/
 
-function setHomeButton() {
+function resetInputUI() {
 
-    const btn = document.getElementById("homeBtn");
+    if (!UI.answerInput) return;
 
-    if (!btn) return;
+    UI.answerInput.value = "";
 
-    btn.addEventListener("click", () => {
+}
 
-        location.href = "index.html";
+/*=========================================
+    Current Marker
+=========================================*/
 
-    });
+function showCurrentMarkerUI(percent) {
+
+    if (!UI.currentMarker) return;
+
+    UI.currentMarker.style.left =
+        percent + "%";
+
+}
+
+/*=========================================
+    Answer Marker
+=========================================*/
+
+function showAnswerMarkerUI(percent) {
+
+    if (!UI.answerMarker) return;
+
+    UI.answerMarker.style.left =
+        percent + "%";
+
+}
+
+/*=========================================
+    Difference
+=========================================*/
+
+function showDifferenceUI(diff) {
+
+    if (!UI.differenceText) return;
+
+    UI.differenceText.textContent =
+        "差：" + diff + "%";
+
+}
+
+/*=========================================
+    Score
+=========================================*/
+
+function showScoreUI(score) {
+
+    if (!UI.scoreText) return;
+
+    UI.scoreText.textContent =
+        "スコア：" + score;
+
+}
+
+/*=========================================
+    Reset Result
+=========================================*/
+
+function resetResultUI() {
+
+    if (UI.differenceText) {
+
+        UI.differenceText.textContent = "";
+
+    }
+
+    if (UI.scoreText) {
+
+        UI.scoreText.textContent = "";
+
+    }
 
 }
 
@@ -129,426 +164,234 @@ function setHomeButton() {
 
 function resetUI() {
 
+    resetInputUI();
+
+    resetResultUI();
+
+    showCurrentMarkerUI(0);
+
+    showAnswerMarkerUI(0);
+
+    setSubmitButtonState(true);
+
+}
+
+/*=========================================
+    Tension Mode
+=========================================*/
+
+function setTensionMode(enable) {
+
+    const bar = document.getElementById("percentBar");
+
+    if (!bar) return;
+
+    if (enable) {
+
+        bar.classList.add("tension");
+
+    } else {
+
+        bar.classList.remove("tension");
+
+    }
+
+}
+
+/*=========================================
+    Marker Visible
+=========================================*/
+
+function showMarkers() {
+
+    if (UI.currentMarker) {
+
+        UI.currentMarker.style.display = "block";
+
+    }
+
+    if (UI.answerMarker) {
+
+        UI.answerMarker.style.display = "block";
+
+    }
+
+}
+
+/*=========================================
+    Marker Hidden
+=========================================*/
+
+function hideMarkers() {
+
+    if (UI.currentMarker) {
+
+        UI.currentMarker.style.display = "none";
+
+    }
+
+    if (UI.answerMarker) {
+
+        UI.answerMarker.style.display = "none";
+
+    }
+
+}
+
+/*=========================================
+    Enable Input
+=========================================*/
+
+function enableInput() {
+
     if (UI.answerInput) {
 
-        UI.answerInput.value = "";
+        UI.answerInput.disabled = false;
 
     }
 
-    if (UI.differenceText) {
+    setSubmitButtonState(true);
 
-        UI.differenceText.textContent = "";
+}
+
+/*=========================================
+    Disable Input
+=========================================*/
+
+function disableInput() {
+
+    if (UI.answerInput) {
+
+        UI.answerInput.disabled = true;
 
     }
 
-    if (UI.scoreText) {
-
-        UI.scoreText.textContent = "";
-
-    }
-
-    clearMarkers();
+    setSubmitButtonState(false);
 
 }
 
 /*=========================================
-    Clear Markers
+    Create Percent Scale
 =========================================*/
 
-function clearMarkers() {
+function createPercentScale() {
 
-    if (!UI.markerLayer) return;
+    const container =
 
-    UI.markerLayer.innerHTML = "";
+        document.getElementById(
 
-}
-/*
-=========================================
- Percent Balloon v2
- ui.js
- Part2
- ゲーム画面表示（問題・バー・マーカー）
-=========================================
-*/
+            "tickContainer"
 
-/*=========================================
-    Show Question
-=========================================*/
+        );
 
-function showQuestionUI(question) {
-
-    if (!UI.question) return;
-
-    UI.question.textContent = question?.text || "";
-
-}
-
-/*=========================================
-    Show Answer Input
-=========================================*/
-
-function setAnswerInput(value) {
-
-    if (!UI.answerInput) return;
-
-    UI.answerInput.value = value ?? "";
-
-}
-
-/*=========================================
-    Update Fill Bar
-=========================================*/
-
-function updateFillBar(percent) {
-
-    if (!UI.fillBar) return;
-
-    const p = clampPercent(percent);
-
-    UI.fillBar.style.width = p + "%";
-
-}
-
-/*=========================================
-    Show Current Marker
-=========================================*/
-
-function showCurrentMarkerUI(percent) {
-
-    if (!UI.markerLayer) return;
-
-    let marker = document.getElementById("currentMarker");
-
-    if (!marker) {
-
-        marker = document.createElement("div");
-
-        marker.id = "currentMarker";
-
-        marker.className = "currentMarker";
-
-        UI.markerLayer.appendChild(marker);
-
-    }
-
-    const p = clampPercent(percent);
-
-    marker.style.left = p + "%";
-
-    updateFillBar(p);
-
-}
-
-/*=========================================
-    Show Answer Marker
-=========================================*/
-
-function showAnswerMarkerUI(percent) {
-
-    if (!UI.markerLayer) return;
-
-    const old = document.querySelector(".answerMarker");
-
-    if (old) old.remove();
-
-    const marker = document.createElement("div");
-
-    marker.className = "answerMarker";
-
-    const triangle = document.createElement("div");
-
-    triangle.className = "triangle";
-
-    const value = document.createElement("div");
-
-    value.className = "value";
-
-    value.textContent = Math.round(percent);
-
-    marker.appendChild(triangle);
-
-    marker.appendChild(value);
-
-    marker.style.left = percent + "%";
-
-    UI.markerLayer.appendChild(marker);
-
-}
-
-/*=========================================
-    Clamp
-=========================================*/
-
-function clampPercent(value) {
-
-    return Math.max(0, Math.min(100, value));
-
-}
-
-/*
-=========================================
- Percent Balloon v2
- ui.js
- Part3
- 結果表示・スコア・状態UI
-=========================================
-*/
-
-/*=========================================
-    Show Difference
-=========================================*/
-
-function showDifferenceUI(diff) {
-
-    if (!UI.differenceText) return;
-
-    if (diff === null || diff === undefined) {
-
-        UI.differenceText.textContent = "";
+    if (!container) {
 
         return;
 
     }
 
-    UI.differenceText.textContent = `差：${Math.round(diff)}%`;
+    container.innerHTML = "";
 
-}
+    for (
 
-/*=========================================
-    Show Score
-=========================================*/
+        let i = 0;
 
-function showScoreUI(score) {
+        i <= 100;
 
-    if (!UI.scoreText) return;
+        i += 10
 
-    UI.scoreText.textContent = `スコア：${score}`;
+    ) {
 
-}
+        const tick =
 
-/*=========================================
-    Show Round Info
-=========================================*/
+            document.createElement(
 
-function showRoundUI(round, total) {
+                "div"
 
-    const title = UI.questionTitle;
+            );
 
-    if (!title) return;
+        tick.className = "tick";
 
-    title.textContent = `問題 ${round + 1} / ${total}`;
+        tick.style.left = i + "%";
 
-}
+        const label =
 
-/*=========================================
-    Set Button State
-=========================================*/
+            document.createElement(
 
-function setSubmitButtonState(enabled) {
+                "span"
 
-    if (!UI.submitButton) return;
+            );
 
-    UI.submitButton.disabled = !enabled;
+        label.className = "tickLabel";
 
-}
+        label.textContent =
 
-/*=========================================
-    Show Game Over
-=========================================*/
+            i + "%";
 
-function showGameOverUI(result) {
+        tick.appendChild(label);
 
-    if (UI.question) {
-
-        UI.question.textContent = "ゲーム終了";
-
-    }
-
-    if (UI.scoreText) {
-
-        UI.scoreText.textContent =
-
-            `最終スコア：${result.score}（ランク：${result.rank}）`;
-
-    }
-
-    if (UI.differenceText) {
-
-        UI.differenceText.textContent =
-
-            `平均：${result.average}%`;
+        container.appendChild(tick);
 
     }
 
 }
 
 /*=========================================
-    Set Waiting State
-=========================================*/
-
-function setWaitingUI() {
-
-    if (UI.question) {
-
-        UI.question.textContent = "開始待機中";
-
-    }
-
-    setSubmitButtonState(true);
-
-}
-
-/*=========================================
-    Set Playing State
-=========================================*/
-
-function setPlayingUI() {
-
-    setSubmitButtonState(true);
-
-}
-/*
-=========================================
- Percent Balloon v2
- ui.js
- Part4
- 演出・リセット・初期化
-=========================================
-*/
-
-/*=========================================
-    Add Class
-=========================================*/
-
-function addClass(el, className) {
-
-    if (!el) return;
-
-    el.classList.add(className);
-
-}
-
-/*=========================================
-    Remove Class
-=========================================*/
-
-function removeClass(el, className) {
-
-    if (!el) return;
-
-    el.classList.remove(className);
-
-}
-
-/*=========================================
-    Flash Effect
-=========================================*/
-
-function flashUI(element) {
-
-    if (!element) return;
-
-    element.classList.remove("flash");
-
-    void element.offsetWidth;
-
-    element.classList.add("flash");
-
-}
-
-/*=========================================
-    Shake Effect
-=========================================*/
-
-function shakeUI(element) {
-
-    if (!element) return;
-
-    element.classList.remove("shake");
-
-    void element.offsetWidth;
-
-    element.classList.add("shake");
-
-}
-
-/*=========================================
-    Pop Effect
-=========================================*/
-
-function popUI(element) {
-
-    if (!element) return;
-
-    element.classList.remove("pop");
-
-    void element.offsetWidth;
-
-    element.classList.add("pop");
-
-}
-
-/*=========================================
-    Set Tension Mode
-=========================================*/
-
-function setTensionMode(enabled) {
-
-    const game = document.getElementById("game");
-
-    if (!game) return;
-
-    if (enabled) {
-
-        game.classList.add("tension");
-
-    } else {
-
-        game.classList.remove("tension");
-
-    }
-
-}
-
-/*=========================================
-    Reset All UI
-=========================================*/
-
-function resetUI() {
-
-    if (UI.answerInput) {
-
-        UI.answerInput.value = "";
-
-    }
-
-    if (UI.differenceText) {
-
-        UI.differenceText.textContent = "";
-
-    }
-
-    if (UI.scoreText) {
-
-        UI.scoreText.textContent = "";
-
-    }
-
-    clearMarkers();
-
-    setTensionMode(false);
-
-}
-
-/*=========================================
-    Initialize UI System
+    Initialize UI
 =========================================*/
 
 function initUI() {
 
-    initializeUI();
+    createPercentScale();
 
-    setWaitingUI();
+    resetUI();
+
+    showMarkers();
 
 }
 
+/*=========================================
+    Auto Initialize
+=========================================*/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    initUI
+
+);
+
+/*=========================================
+    Export
+=========================================*/
+
+window.UIManager = {
+
+    showQuestionUI,
+
+    showQuestionTitleUI,
+
+    showCurrentMarkerUI,
+
+    showAnswerMarkerUI,
+
+    showDifferenceUI,
+
+    showScoreUI,
+
+    setSubmitButtonState,
+
+    setTensionMode,
+
+    enableInput,
+
+    disableInput,
+
+    resetUI,
+
+    showMarkers,
+
+    hideMarkers
+
+};

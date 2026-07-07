@@ -2,76 +2,361 @@
 =========================================
  Percent Balloon v2
  animation.js
- Part1
- 基本アニメーション制御
+ 完成版 Part1
 =========================================
 */
 
 /*=========================================
-    Animation State
+    Animation
 =========================================*/
 
-let Animation = {
+const Animation = {
 
-    state: "idle",
+    timer: null,
 
     current: 0,
 
     target: 0,
 
-    speed: 0,
+    state: "idle",
 
-    timer: null
+    callback: null
 
 };
 
 /*=========================================
-    Start Animation
+    Start
 =========================================*/
 
-function startAnimation(target) {
+function startAnimation(
+
+    target,
+
+    callback
+
+) {
 
     stopAnimation();
 
-    Animation.target = clampPercent(target);
-
-    Animation.state = "chaos";
-
     Animation.current = 0;
 
-    Animation.speed = 0;
+    Animation.target = clampPercent(target);
+
+    Animation.callback = callback || null;
+
+    Animation.state = "chaos";
 
     runAnimation();
 
 }
 
 /*=========================================
-    Stop Animation
+    Stop
 =========================================*/
 
 function stopAnimation() {
 
     if (Animation.timer) {
 
-        clearInterval(Animation.timer);
+        clearInterval(
 
-        Animation.timer = null;
+            Animation.timer
+
+        );
 
     }
+
+    Animation.timer = null;
 
     Animation.state = "idle";
 
 }
 
 /*=========================================
-    Set Current Value
+    Current Value
 =========================================*/
 
 function setAnimationValue(value) {
 
-    Animation.current = clampPercent(value);
+    Animation.current =
 
-    showCurrentMarkerUI(Animation.current);
+        clampPercent(value);
+
+    if (
+
+        typeof showCurrentMarkerUI ===
+
+        "function"
+
+    ) {
+
+        showCurrentMarkerUI(
+
+            Animation.current
+
+        );
+
+    }
+
+}
+
+/*=========================================
+    Clamp
+=========================================*/
+
+function clampPercent(value) {
+
+    value = Number(value);
+
+    if (isNaN(value)) value = 0;
+
+    if (value < 0) value = 0;
+
+    if (value > 100) value = 100;
+
+    return value;
+
+}
+
+/*=========================================
+    Run Animation
+=========================================*/
+
+function runAnimation() {
+
+    Animation.timer = setInterval(
+
+        updateAnimation,
+
+        40
+
+    );
+
+}
+
+/*=========================================
+    Update Animation
+=========================================*/
+
+function updateAnimation() {
+
+    switch (Animation.state) {
+
+        case "chaos":
+
+            updateChaos();
+
+            break;
+
+        case "drift":
+
+            updateDrift();
+
+            break;
+
+        case "tension":
+
+            updateTension();
+
+            break;
+
+        case "stop":
+
+            finishAnimation();
+
+            break;
+
+    }
+
+}
+
+/*=========================================
+    Chaos
+=========================================*/
+
+function updateChaos() {
+
+    setAnimationValue(
+
+        Math.random() * 100
+
+    );
+
+    if (
+
+        Math.random() < 0.03
+
+    ) {
+
+        Animation.state = "drift";
+
+    }
+
+}
+
+/*=========================================
+    Drift
+=========================================*/
+
+function updateDrift() {
+
+    const diff =
+
+        Animation.target -
+
+        Animation.current;
+
+    Animation.current +=
+
+        diff * 0.18;
+
+    setAnimationValue(
+
+        Animation.current
+
+    );
+
+    if (
+
+        Math.abs(diff) < 10
+
+    ) {
+
+        Animation.state =
+
+            "tension";
+
+    }
+
+}
+
+/*=========================================
+    Tension
+=========================================*/
+
+function updateTension() {
+
+    const diff =
+
+        Animation.target -
+
+        Animation.current;
+
+    if (
+
+        Math.abs(diff) <= 1
+
+    ) {
+
+        Animation.current =
+
+            Animation.target;
+
+        setAnimationValue(
+
+            Animation.current
+
+        );
+
+        Animation.state =
+
+            "stop";
+
+        return;
+
+    }
+
+    Animation.current +=
+
+        diff > 0 ? 1 : -1;
+
+    setAnimationValue(
+
+        Animation.current
+
+    );
+
+}
+
+/*=========================================
+    Finish Animation
+=========================================*/
+
+function finishAnimation() {
+
+    stopAnimation();
+
+    setAnimationValue(
+
+        Animation.target
+
+    );
+
+    showStopEffect();
+
+    setTimeout(function () {
+
+        if (
+
+            typeof Animation.callback ===
+
+            "function"
+
+        ) {
+
+            Animation.callback();
+
+        }
+
+    }, 500);
+
+}
+
+/*=========================================
+    Stop Effect
+=========================================*/
+
+function showStopEffect() {
+
+    const marker =
+
+        document.getElementById(
+
+            "currentMarker"
+
+        );
+
+    if (!marker) {
+
+        return;
+
+    }
+
+    marker.classList.add(
+
+        "stopEffect"
+
+    );
+
+    setTimeout(function () {
+
+        marker.classList.remove(
+
+            "stopEffect"
+
+        );
+
+    }, 400);
+
+}
+
+/*=========================================
+    Animation Running
+=========================================*/
+
+function isAnimationRunning() {
+
+    return Animation.timer !== null;
 
 }
 
@@ -86,470 +371,181 @@ function getAnimationValue() {
 }
 
 /*=========================================
-    Is Running
+    Reset Animation
 =========================================*/
 
-function isAnimationRunning() {
+function resetAnimation() {
 
-    return Animation.timer !== null;
+    stopAnimation();
+
+    Animation.current = 0;
+
+    Animation.target = 0;
+
+    Animation.callback = null;
+
+    Animation.state = "idle";
+
+    setAnimationValue(0);
 
 }
 
 /*=========================================
-    Run Core Loop
-=========================================*/
-
-function runAnimation() {
-
-    if (Animation.timer) {
-
-        clearInterval(Animation.timer);
-
-    }
-
-    Animation.timer = setInterval(() => {
-
-        if (Animation.state === "idle") {
-
-            stopAnimation();
-
-            return;
-
-        }
-
-        updateAnimation();
-
-    }, 50);
-
-}
-
-/*=========================================
-    Update Animation (dispatcher)
-=========================================*/
-
-function updateAnimation() {
-
-    // この後 Part2〜で中身を追加
-
-}
-/*
-=========================================
- Percent Balloon v2
- animation.js
- Part2
- カオスフェーズ（暴走）
-=========================================
-*/
-
-/*=========================================
-    Chaos Phase
-=========================================*/
-
-function chaosPhase() {
-
-    Animation.state = "chaos";
-
-    Animation.speed = 25;
-
-}
-
-/*=========================================
-    Chaos Update
-=========================================*/
-
-function updateChaos() {
-
-    // ランダムに0〜100を大きく飛ぶ
-
-    const jump = Math.random() * 100;
-
-    setAnimationValue(jump);
-
-    // たまに大きく振れる演出（強調）
-
-    if (Math.random() < 0.15) {
-
-        const burst = Math.random() * 100;
-
-        setAnimationValue(burst);
-
-    }
-
-    // ある程度進んだらドリフトへ
-
-    if (Math.random() < 0.03) {
-
-        driftPhase();
-
-    }
-
-}
-
-/*=========================================
-    Burst Effect (visual spike)
-=========================================*/
-
-function burstEffect() {
-
-    const offset = (Math.random() - 0.5) * 40;
-
-    let value = Animation.current + offset;
-
-    value = clampPercent(value);
-
-    setAnimationValue(value);
-
-}
-
-/*=========================================
-    Chaos Trigger
-=========================================*/
-
-function triggerChaos() {
-
-    chaosPhase();
-
-}
-/*
-=========================================
- Percent Balloon v2
- animation.js
- Part3
- ドリフトフェーズ（収束）
-=========================================
-*/
-
-/*=========================================
-    Drift Phase
-=========================================*/
-
-function driftPhase() {
-
-    Animation.state = "drift";
-
-    Animation.speed = 12;
-
-}
-
-/*=========================================
-    Drift Update
-=========================================*/
-
-function updateDrift() {
-
-    const diff = Animation.target - Animation.current;
-
-    // 距離に応じてスピード変化（遠いほど速い）
-
-    const step = Math.max(
-
-        1,
-
-        Math.abs(diff) * 0.08
-
-    );
-
-    // 徐々に近づく
-
-    if (Math.abs(diff) > 15) {
-
-        Animation.current +=
-
-            diff > 0 ? step : -step;
-
-    } else {
-
-        // 近づいたらテンションへ
-
-        tensionPhase();
-
-        return;
-
-    }
-
-    // ゆらぎ（ネプリーグっぽいブレ）
-
-    if (Math.random() < 0.2) {
-
-        Animation.current +=
-
-            (Math.random() - 0.5) * 6;
-
-    }
-
-    Animation.current = clampPercent(Animation.current);
-
-    setAnimationValue(Animation.current);
-
-}
-
-/*=========================================
-    Soft Drift (微調整)
-=========================================*/
-
-function softDrift() {
-
-    const diff = Animation.target - Animation.current;
-
-    Animation.current += diff * 0.15;
-
-    Animation.current = clampPercent(Animation.current);
-
-    setAnimationValue(Animation.current);
-
-}
-
-/*=========================================
-    Enter Drift
-=========================================*/
-
-function enterDrift() {
-
-    driftPhase();
-
-}
-/*
-=========================================
- Percent Balloon v2
- animation.js
- Part4
- テンションフェーズ（1%刻み）
-=========================================
-*/
-
-/*=========================================
-    Tension Phase
-=========================================*/
-
-function tensionPhase() {
-
-    Animation.state = "tension";
-
-    Animation.speed = 80;
-
-}
-
-/*=========================================
-    Tension Update
-=========================================*/
-
-function updateTension() {
-
-    const diff = Animation.target - Animation.current;
-
-    // 1%刻みでじわじわ動く
-
-    if (Math.abs(diff) > 1) {
-
-        Animation.current +=
-
-            diff > 0 ? 1 : -1;
-
-    } else {
-
-        // 最終フェーズへ
-
-        stopPhase();
-
-        return;
-
-    }
-
-    // 緊張演出（止まりそうで止まらない）
-
-    if (Math.random() < 0.25) {
-
-        Animation.current +=
-
-            (Math.random() - 0.5) * 1.5;
-
-    }
-
-    Animation.current = clampPercent(Animation.current);
-
-    setAnimationValue(Animation.current);
-
-    // UIテンション演出
-
-    if (Math.abs(diff) < 10) {
-
-        setTensionMode(true);
-
-    }
-
-}
-
-/*=========================================
-    Enter Tension
-=========================================*/
-
-function enterTension() {
-
-    tensionPhase();
-
-}
-/*
-=========================================
- Percent Balloon v2
- animation.js
- Part5
- ストップ演出（完成）
-=========================================
-*/
-
-/*=========================================
-    Stop Phase
-=========================================*/
-
-function stopPhase() {
-
-    Animation.state = "stop";
-
-    Animation.speed = 0;
-
-    setAnimationValue(Animation.target);
-
-    setTensionMode(false);
-
-    showStopEffect();
-
-    // 少し間を置いて次処理へ
-    setTimeout(() => {
-
-        onAnimationComplete();
-
-    }, CONFIG.ANIMATION.STOP_DELAY);
-
-}
-
-/*=========================================
-    Snap Stop（即停止）
+    Snap Stop
 =========================================*/
 
 function snapStop() {
 
-    Animation.current = Animation.target;
+    Animation.current =
 
-    setAnimationValue(Animation.current);
+        Animation.target;
 
-    stopPhase();
+    setAnimationValue(
+
+        Animation.current
+
+    );
+
+    Animation.state = "stop";
 
 }
 
 /*=========================================
-    Slow Stop（ため停止）
+    Slow Stop
 =========================================*/
 
 function slowStop() {
 
-    Animation.state = "slowStop";
+    Animation.state =
 
-    let steps = 10;
-
-    const diff = Animation.target - Animation.current;
-
-    const step = diff / steps;
-
-    const timer = setInterval(() => {
-
-        Animation.current += step;
-
-        Animation.current = clampPercent(Animation.current);
-
-        setAnimationValue(Animation.current);
-
-        steps--;
-
-        if (steps <= 0) {
-
-            clearInterval(timer);
-
-            stopPhase();
-
-        }
-
-    }, 120);
+        "tension";
 
 }
 
 /*=========================================
-    Show Stop Effect
+    Restart Animation
 =========================================*/
 
-function showStopEffect() {
+function restartAnimation(
 
-    const marker = document.getElementById("currentMarker");
+    target,
 
-    if (marker) {
+    callback
 
-        marker.classList.add("pop");
+) {
 
-        marker.classList.add("flash");
+    resetAnimation();
 
-    }
+    startAnimation(
 
-}
+        target,
 
-/*=========================================
-    Animation Complete Callback
-=========================================*/
-
-function onAnimationComplete() {
-
-    // UI更新（差・スコアなど）
-
-    const diff = Math.abs(
-
-        Game.userAnswer - Animation.target
+        callback
 
     );
 
-    Game.difference = diff;
+}
 
-    calculateDifference();
+/*=========================================
+    Skip Animation
+=========================================*/
 
-    addScore();
+function skipAnimation() {
 
-    showDifferenceUI(diff);
+    if (
 
-    showScoreUI(Game.score);
+        !isAnimationRunning()
 
-    // 次ラウンドへ
+    ) {
 
-    setTimeout(() => {
+        return;
 
-        nextRound();
+    }
 
-        startAnimation(0);
+    snapStop();
 
-    }, CONFIG.GAME.AUTO_NEXT_TIME);
+    finishAnimation();
 
 }
 
 /*=========================================
-    Dispatcher Update（完成）
+    Get Target Value
 =========================================*/
 
-function updateAnimation() {
+function getAnimationTarget() {
 
-    switch (Animation.state) {
+    return Animation.target;
 
-        case "chaos":
-            updateChaos();
-            break;
+}
 
-        case "drift":
-            updateDrift();
-            break;
+/*=========================================
+    Initialize Animation
+=========================================*/
 
-        case "tension":
-            updateTension();
-            break;
+function initAnimation() {
 
-        case "stop":
-        default:
-            break;
+    resetAnimation();
+
+}
+
+/*=========================================
+    Window Resize
+=========================================*/
+
+window.addEventListener(
+
+    "resize",
+
+    function () {
+
+        setAnimationValue(
+
+            Animation.current
+
+        );
 
     }
 
-}
+);
+
+/*=========================================
+    Auto Initialize
+=========================================*/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    initAnimation
+
+);
+
+/*=========================================
+    Export
+=========================================*/
+
+window.AnimationManager = {
+
+    startAnimation,
+
+    stopAnimation,
+
+    restartAnimation,
+
+    resetAnimation,
+
+    skipAnimation,
+
+    snapStop,
+
+    slowStop,
+
+    setAnimationValue,
+
+    getAnimationValue,
+
+    getAnimationTarget,
+
+    isAnimationRunning
+
+};

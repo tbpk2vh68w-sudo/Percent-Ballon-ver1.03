@@ -2,64 +2,47 @@
 =========================================
  Percent Balloon v2
  host_editor.js
- 問題編集
+ 完成版 Part1
 =========================================
 */
 
 /*=========================================
-    Load Room
+    DOM
 =========================================*/
-
-function loadEditorRoom() {
-
-    const roomId = localStorage.getItem("editingRoom");
-
-    const rooms = JSON.parse(
-
-        localStorage.getItem("rooms") || "{}"
-
-    );
-
-    CurrentRoom = rooms[roomId];
-
-    if (!CurrentRoom) {
-
-        location.href = "host.html";
-
-        return;
-
-    }
-
-}
-
-/*
-=========================================
- Percent Balloon v2
- host_editor.js
- Part1
-=========================================
-*/
 
 const EditorUI = {
 
-    roomName: document.getElementById("roomName"),
+    roomName:
+        document.getElementById("roomName"),
 
-    questionInput: document.getElementById("questionInput"),
+    questionInput:
+        document.getElementById("questionInput"),
 
-    answerInput: document.getElementById("answerInput"),
+    answerInput:
+        document.getElementById("answerInput"),
 
-    questionList: document.getElementById("questionList"),
+    addButton:
+        document.getElementById("addQuestionButton"),
 
-    addButton: document.getElementById("addQuestionButton"),
+    questionList:
+        document.getElementById("questionList"),
 
-    saveButton: document.getElementById("saveButton"),
+    saveButton:
+        document.getElementById("saveButton"),
 
-    startButton: document.getElementById("startButton"),
+    startButton:
+        document.getElementById("startButton"),
 
-    homeButton: document.getElementById("homeButton")
+    homeButton:
+        document.getElementById("homeButton")
 
 };
 
+/*=========================================
+    Current Room
+=========================================*/
+
+let CurrentRoom = null;
 
 /*=========================================
     Initialize
@@ -77,7 +60,7 @@ function initEditor() {
 
     loadRoom();
 
-    renderRoom();
+    renderRoomInfo();
 
     renderQuestionList();
 
@@ -85,11 +68,23 @@ function initEditor() {
 
 }
 
+/*=========================================
+    Load Room
+=========================================*/
+
 function loadRoom() {
 
-    const roomId = localStorage.getItem("editingRoom");
+    const roomId = localStorage.getItem(
 
-    CurrentRoom = getRoom(roomId);
+        "editingRoom"
+
+    );
+
+    CurrentRoom = RoomManager.getRoom(
+
+        roomId
+
+    );
 
     if (!CurrentRoom) {
 
@@ -107,7 +102,7 @@ function loadRoom() {
     Render Room
 =========================================*/
 
-function renderRoom() {
+function renderRoomInfo() {
 
     EditorUI.roomName.textContent =
 
@@ -123,37 +118,58 @@ function renderQuestionList() {
 
     EditorUI.questionList.innerHTML = "";
 
-    CurrentRoom.questions.forEach(function (question, index) {
+    if (CurrentRoom.questions.length === 0) {
 
-        const div = document.createElement("div");
+        const p = document.createElement("p");
 
-        div.className = "questionCard";
+        p.textContent = "問題がありません。";
+
+        EditorUI.questionList.appendChild(p);
+
+        return;
+
+    }
+
+    CurrentRoom.questions.forEach(function (q, index) {
+
+        const card = document.createElement("div");
+
+        card.className = "questionCard";
 
         const text = document.createElement("span");
 
         text.textContent =
             (index + 1) +
             ". " +
-            question.text +
+            q.text +
             "（" +
-            question.answer +
+            q.answer +
             "%）";
 
-        const deleteButton = document.createElement("button");
+        const deleteButton =
+            document.createElement("button");
 
         deleteButton.textContent = "削除";
 
         deleteButton.onclick = function () {
 
-            deleteQuestion(index);
+            if (confirm("この問題を削除しますか？")) {
+
+                CurrentRoom.questions.splice(index, 1);
+
+                RoomManager.saveRoom(CurrentRoom);
+
+                renderQuestionList();
+
+            }
 
         };
 
-        div.appendChild(text);
+        card.appendChild(text);
 
-        div.appendChild(deleteButton);
+        card.appendChild(deleteButton);
 
-        EditorUI.questionList.appendChild(div);
+        EditorUI.questionList.appendChild(card);
 
     });
 
@@ -165,7 +181,9 @@ function renderQuestionList() {
 
 function addQuestion() {
 
-    const text = EditorUI.questionInput.value.trim();
+    const text =
+
+        EditorUI.questionInput.value.trim();
 
     const answer = Number(
 
@@ -173,17 +191,19 @@ function addQuestion() {
 
     );
 
-    if (text === "") {
+    if (
 
-        alert("問題文を入力してください。");
+        !RoomManager.validateQuestion(
 
-        return;
+            text,
 
-    }
+            answer
 
-    if (isNaN(answer) || answer < 0 || answer > 100) {
+        )
 
-        alert("答えは0～100で入力してください。");
+    ) {
+
+        alert("問題文と答えを正しく入力してください。");
 
         return;
 
@@ -191,33 +211,19 @@ function addQuestion() {
 
     CurrentRoom.questions.push({
 
+        id: Date.now().toString(),
+
         text: text,
 
         answer: answer
 
     });
 
+    RoomManager.saveRoom(CurrentRoom);
+
     EditorUI.questionInput.value = "";
 
     EditorUI.answerInput.value = "";
-
-    renderQuestionList();
-
-}
-
-/*=========================================
-    Delete Question
-=========================================*/
-
-function deleteQuestion(index) {
-
-    if (!confirm("この問題を削除しますか？")) {
-
-        return;
-
-    }
-
-    CurrentRoom.questions.splice(index, 1);
 
     renderQuestionList();
 
@@ -229,7 +235,7 @@ function deleteQuestion(index) {
 
 function saveRoom() {
 
-    saveRoomData(CurrentRoom);
+    RoomManager.saveRoom(CurrentRoom);
 
     alert("保存しました。");
 
@@ -243,25 +249,13 @@ function startGame() {
 
     if (CurrentRoom.questions.length === 0) {
 
-        alert("問題を追加してください。");
+        alert("問題を1問以上追加してください。");
 
         return;
 
     }
 
-    CurrentRoom.currentQuestion = 0;
-
-    CurrentRoom.state = "waiting";
-
-    saveRoomData(CurrentRoom);
-
-    localStorage.setItem(
-
-        "currentRoomId",
-
-        CurrentRoom.id
-
-    );
+    RoomManager.startGame(CurrentRoom.id);
 
     location.href = "play.html";
 
@@ -281,10 +275,67 @@ function bindEvents() {
 
     EditorUI.homeButton.onclick = function () {
 
-    saveRoomData(CurrentRoom);
+        RoomManager.saveRoom(CurrentRoom);
 
-    location.href = "host.html";
+        location.href = "host.html";
+
+    };
+
+}
+
+/*=========================================
+    Refresh
+=========================================*/
+
+function refreshEditor() {
+
+    CurrentRoom = RoomManager.getRoom(
+
+        CurrentRoom.id
+
+    );
+
+    if (!CurrentRoom) {
+
+        alert("ルームが削除されました。");
+
+        location.href = "host.html";
+
+        return;
+
+    }
+
+    renderRoomInfo();
+
+    renderQuestionList();
+
+}
+
+/*=========================================
+    Auto Refresh
+=========================================*/
+
+function startAutoRefresh() {
+
+    setInterval(function () {
+
+        refreshEditor();
+
+    }, 1000);
+
+}
+
+/*=========================================
+    Initialize
+=========================================*/
+
+const _initEditor = initEditor;
+
+initEditor = function () {
+
+    _initEditor();
+
+    startAutoRefresh();
 
 };
 
-}

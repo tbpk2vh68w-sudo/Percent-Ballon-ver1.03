@@ -2,19 +2,27 @@
 =========================================
  Percent Balloon v2
  host.js
- ルーム管理
+ 完成版 Part1
 =========================================
 */
 
+/*=========================================
+    DOM
+=========================================*/
+
 const HostUI = {
 
-    roomNameInput: document.getElementById("roomNameInput"),
+    roomNameInput:
+        document.getElementById("roomNameInput"),
 
-    roomList: document.getElementById("roomList"),
+    createRoomButton:
+        document.getElementById("createRoomButton"),
 
-    createRoomButton: document.getElementById("createRoomButton"),
+    roomList:
+        document.getElementById("roomList"),
 
-    homeButton: document.getElementById("homeButton")
+    homeButton:
+        document.getElementById("homeButton")
 
 };
 
@@ -32,9 +40,9 @@ document.addEventListener(
 
 function initHost() {
 
-    renderRoomList();
-
     bindEvents();
+
+    renderRoomList();
 
 }
 
@@ -44,23 +52,33 @@ function initHost() {
 
 function bindEvents() {
 
-    HostUI.createRoomButton.onclick = createRoom;
+    HostUI.createRoomButton.onclick =
+        onCreateRoom;
 
-    HostUI.homeButton.onclick = function () {
+    HostUI.homeButton.onclick =
+        function () {
 
-        location.href = "index.html";
+            location.href = "index.html";
 
-    };
+        };
 
 }
 
-HostUI.createRoomButton.onclick = function () {
+/*=========================================
+    Create Room Button
+=========================================*/
 
-    const roomName =
+function onCreateRoom() {
+
+    const name =
 
         HostUI.roomNameInput.value.trim();
 
-    if (roomName === "") {
+    if (
+
+        !RoomManager.validateRoomName(name)
+
+    ) {
 
         alert("ルーム名を入力してください。");
 
@@ -68,21 +86,37 @@ HostUI.createRoomButton.onclick = function () {
 
     }
 
-    createRoom(roomName);
+    RoomManager.createRoom(name);
 
     HostUI.roomNameInput.value = "";
 
     renderRoomList();
 
-};
+}
+
+/*=========================================
+    Render Room List
+=========================================*/
 
 function renderRoomList() {
 
-    const rooms = getRooms();
+    const rooms = RoomManager.getRoomList();
 
     HostUI.roomList.innerHTML = "";
 
-    Object.values(rooms).forEach(function (room) {
+    if (rooms.length === 0) {
+
+        const p = document.createElement("p");
+
+        p.textContent = "保存されたルームはありません。";
+
+        HostUI.roomList.appendChild(p);
+
+        return;
+
+    }
+
+    rooms.forEach(function (room) {
 
         const card = document.createElement("div");
 
@@ -92,14 +126,18 @@ function renderRoomList() {
 
         title.textContent = room.name;
 
-        const id = document.createElement("p");
+        const info = document.createElement("p");
 
-        id.textContent =
+        info.textContent =
+            "ルームID：" + room.id;
 
-            "ルームID : " + room.id;
+        const buttonArea =
+            document.createElement("div");
+
+        buttonArea.className =
+            "roomButtonArea";
 
         const editButton =
-
             document.createElement("button");
 
         editButton.textContent = "編集";
@@ -115,13 +153,11 @@ function renderRoomList() {
             );
 
             location.href =
-
                 "host_editor.html";
 
         };
 
         const deleteButton =
-
             document.createElement("button");
 
         deleteButton.textContent = "削除";
@@ -132,13 +168,19 @@ function renderRoomList() {
 
                 confirm(
 
-                    "このルームを削除しますか？"
+                    "「" +
+                    room.name +
+                    "」を削除しますか？"
 
                 )
 
             ) {
 
-                deleteRoom(room.id);
+                RoomManager.deleteRoom(
+
+                    room.id
+
+                );
 
                 renderRoomList();
 
@@ -146,51 +188,174 @@ function renderRoomList() {
 
         };
 
+        buttonArea.appendChild(editButton);
+
+        buttonArea.appendChild(deleteButton);
+
         card.appendChild(title);
 
-        card.appendChild(id);
+card.appendChild(info);
 
-        card.appendChild(editButton);
+renderUpdatedTime(card, room);
 
-        card.appendChild(deleteButton);
+card.appendChild(buttonArea);
 
-        HostUI.roomList.appendChild(card);
+HostUI.roomList.appendChild(card);
 
     });
 
 }
 
-
-
 /*=========================================
-    Get Room
+    Update Room List
 =========================================*/
 
-function getRoom(roomId) {
+function refreshRoomList() {
 
-    const rooms = JSON.parse(
-
-        localStorage.getItem("rooms") || "{}"
-
-    );
-
-    return rooms[roomId] || null;
+    renderRoomList();
 
 }
 
 /*=========================================
-    Get All Rooms
+    Format Date
 =========================================*/
 
-function getAllRooms() {
+function formatDate(time) {
 
-    const rooms = JSON.parse(
+    if (!time) {
 
-        localStorage.getItem("rooms") || "{}"
+        return "----/--/-- --:--";
+
+    }
+
+    const date = new Date(time);
+
+    const y = date.getFullYear();
+
+    const m = String(
+
+        date.getMonth() + 1
+
+    ).padStart(2, "0");
+
+    const d = String(
+
+        date.getDate()
+
+    ).padStart(2, "0");
+
+    const h = String(
+
+        date.getHours()
+
+    ).padStart(2, "0");
+
+    const min = String(
+
+        date.getMinutes()
+
+    ).padStart(2, "0");
+
+    return (
+
+        y +
+
+        "/" +
+
+        m +
+
+        "/" +
+
+        d +
+
+        " " +
+
+        h +
+
+        ":" +
+
+        min
 
     );
 
-    return Object.values(rooms);
+}
+
+/*=========================================
+    Update Room Cards
+=========================================*/
+
+function updateRoomCards() {
+
+    const cards =
+
+        document.querySelectorAll(
+
+            ".roomCard"
+
+        );
+
+    cards.forEach(function(card){
+
+        card.style.cursor = "default";
+
+    });
 
 }
 
+/*=========================================
+    Refresh Screen
+=========================================*/
+
+function refreshScreen() {
+
+    refreshRoomList();
+
+    updateRoomCards();
+
+}
+
+/*=========================================
+    Render Updated Time
+=========================================*/
+
+function renderUpdatedTime(card, room) {
+
+    const updated = document.createElement("p");
+
+    updated.className = "roomUpdated";
+
+    updated.textContent =
+        "最終更新 : " +
+        formatDate(room.updatedAt);
+
+    card.appendChild(updated);
+
+}
+
+/*=========================================
+    Auto Refresh
+=========================================*/
+
+function startAutoRefresh() {
+
+    setInterval(function () {
+
+        refreshScreen();
+
+    }, 1000);
+
+}
+
+/*=========================================
+    Final Initialize
+=========================================*/
+
+const _initHost = initHost;
+
+initHost = function () {
+
+    _initHost();
+
+    startAutoRefresh();
+
+};

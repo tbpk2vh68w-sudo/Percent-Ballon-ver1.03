@@ -105,8 +105,7 @@ function loadRoom() {
 function renderRoomInfo() {
 
     EditorUI.roomName.textContent =
-
-        CurrentRoom.name;
+        "問題編集 - " + CurrentRoom.name;
 
 }
 

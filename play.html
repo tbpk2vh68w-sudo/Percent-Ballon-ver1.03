@@ -20,100 +20,90 @@ href="css/style.css">
 
 <div id="game">
 
-<h1>
+    <h1>
+        Percent Balloon
+    </h1>
 
-Percent Balloon
+    <div id="questionBox">
 
-</h1>
+        <div id="questionTitle">
+        </div>
 
-<div id="questionBox">
+        <div id="question">
+        </div>
 
-<div id="questionTitle">
+    </div>
 
+    <div id="answerArea">
 
-</div>
+        <input
+            id="answerInput"
+            type="number"
+            min="0"
+            max="100"
+        >
 
-<div id="question">
+        <button id="submitButton">
+            解答
+        </button>
 
-</div>
+    </div>
 
-</div>
+    <div id="mainScreen">
 
-<div id="answerArea">
+        <div id="percentBar">
 
-    <input
+            <!-- バー -->
+            <div id="colorBar">
 
-        id="answerInput"
+                <div id="fillBar"></div>
 
-        type="number"
+            </div>
 
-        min="0"
+            <!-- 目盛り -->
+            <div id="tickContainer"></div>
 
-        max="100"
+            <!-- マーカー -->
+            <div id="markerLayer">
 
-    >
+                <div
+                    id="currentMarker"
+                    class="currentMarker">
+                </div>
 
-    <button id="submitButton">
+                <div
+                    id="answerMarker"
+                    class="answerMarker">
+                </div>
 
-        解答
+                <div
+                    id="correctMarker"
+                    class="correctMarker">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="resultArea">
+
+        <div id="differenceText">
+        </div>
+
+        <div id="scoreText">
+        </div>
+
+    </div>
+
+    <button
+        id="homeButton"
+        class="backButton">
+
+        ホームへ戻る
 
     </button>
-
-</div>
-
-<div id="mainScreen">
-
-<div id="percentBar">
-
-<div id="markerLayer">
-
-    <div id="currentMarker" class="marker"></div>
-
-    <div id="answerMarker" class="answerMarker"></div>
-
-</div>
-
-</div>
-
-<div id="colorBar">
-
-<div id="fillBar">
-
-</div>
-
-</div>
-
-<div id="tickContainer">
-
-</div>
-
-</div>
-
-</div>
-
-<div id="resultArea">
-
-<div id="differenceText">
-
-</div>
-
-<div id="scoreText">
-
-</div>
-
-</div>
-
-<button
-
-    id="homeButton"
-
-    class="backButton"
-
->
-
-    ホームへ戻る
-
-</button>
 
 </div>
 

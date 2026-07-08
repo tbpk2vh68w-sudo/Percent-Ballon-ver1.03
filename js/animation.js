@@ -182,11 +182,12 @@ function updateChaos() {
 
     );
 
-    if (
+    Animation.chaosCount =
+        (Animation.chaosCount || 0) + 1;
 
-        Math.random() < 0.03
+    if (Animation.chaosCount > 35) {
 
-    ) {
+        Animation.chaosCount = 0;
 
         Animation.state = "drift";
 
@@ -208,7 +209,7 @@ function updateDrift() {
 
     Animation.current +=
 
-        diff * 0.18;
+        diff * 0.12;
 
     setAnimationValue(
 
@@ -218,7 +219,7 @@ function updateDrift() {
 
     if (
 
-        Math.abs(diff) < 10
+        Math.abs(diff) < 15
 
     ) {
 
@@ -244,7 +245,7 @@ function updateTension() {
 
     if (
 
-        Math.abs(diff) <= 1
+        Math.abs(diff) <= 0.5
 
     ) {
 
@@ -266,9 +267,13 @@ function updateTension() {
 
     }
 
-    Animation.current +=
+    const move =
 
-        diff > 0 ? 1 : -1;
+        diff * 0.25 +
+
+        (Math.random() - 0.5) * 1.8;
+
+    Animation.current += move;
 
     setAnimationValue(
 
@@ -293,6 +298,24 @@ function finishAnimation() {
     );
 
     showStopEffect();
+
+    const marker =
+
+    document.getElementById(
+
+        "currentMarker"
+
+    );
+
+if(marker){
+
+    marker.classList.add(
+
+        "success"
+
+    );
+
+}
 
     setTimeout(function () {
 

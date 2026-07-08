@@ -993,6 +993,8 @@ h1{
 
     top:94px;
 
+    left:0;
+
     width:34px;
 
     height:34px;
@@ -1006,10 +1008,10 @@ h1{
     border:4px solid white;
 
     box-shadow:
+        0 0 12px rgba(0,0,0,.35);
 
-    0 0 12px
-    rgba(0,0,0,.35);
-
+    transition:
+        left .08s linear;
 }
 
 /*=========================================
@@ -1022,9 +1024,11 @@ h1{
 
     top:8px;
 
+    left:0;
+
     transform:translateX(-50%);
 
-    display:flex;
+    display:none;
 
     flex-direction:column;
 
@@ -1042,9 +1046,11 @@ h1{
 
     top:8px;
 
+    left:0;
+
     transform:translateX(-50%);
 
-    display:flex;
+    display:none;
 
     flex-direction:column;
 
@@ -1673,5 +1679,39 @@ input:disabled{
 .questionCard button {
 
     flex-shrink: 0;
+
+}
+
+.stopEffect{
+
+    animation:stopPop .35s;
+
+}
+
+@keyframes stopPop{
+
+    0%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(.7);
+
+    }
+
+    60%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(1.35);
+
+    }
+
+    100%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(1);
+
+    }
 
 }

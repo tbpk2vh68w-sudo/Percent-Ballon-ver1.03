@@ -205,15 +205,7 @@ function submitAnswer() {
 
     PlayUI.submitButton.disabled = true;
 
-    if (
-
-        typeof showAnswerMarkerUI === "function"
-
-    ) {
-
-        showAnswerMarkerUI(value);
-
-    }
+    showAnswerMarkerUI(value);
 
     if (
 
@@ -242,7 +234,11 @@ function submitAnswer() {
 =========================================*/
 
 function onAnimationFinished() {
+showCorrectMarkerUI(
 
+    Play.question.answer
+
+);
     const diff = Math.abs(
 
         Play.answer -
@@ -250,6 +246,7 @@ function onAnimationFinished() {
         Play.question.answer
 
     );
+    GameManager.addGameScore(diff);
 
     const differenceText =
 
@@ -277,13 +274,13 @@ function onAnimationFinished() {
 
     if (scoreText) {
 
-        scoreText.textContent =
+        const score = GameManager.calculateScore(diff);
 
-            "正解：" +
+scoreText.textContent =
 
-            Play.question.answer +
+    "スコア：" +
 
-            "%";
+    score;
 
     }
 
@@ -353,9 +350,11 @@ function finishGame() {
 
         "ゲーム終了";
 
-    PlayUI.question.textContent =
+   PlayUI.question.textContent =
 
-        "お疲れ様でした！";
+    "合計スコア：" +
+
+    GameManager.getGameScore();
 
     PlayUI.submitButton.disabled = true;
 

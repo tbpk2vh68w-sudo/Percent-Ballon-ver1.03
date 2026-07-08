@@ -30,11 +30,11 @@ const UI = {
     answerMarker:
         document.getElementById("answerMarker"),
 
-    differenceText:
-        document.getElementById("differenceText"),
+    correctMarker:
+        document.getElementById("correctMarker"),
 
-    scoreText:
-        document.getElementById("scoreText")
+    fillBar:
+        document.getElementById("fillBar")
 
 };
 
@@ -92,10 +92,24 @@ function resetInputUI() {
 
 function showCurrentMarkerUI(percent) {
 
-    if (!UI.currentMarker) return;
+    percent = Math.max(
+        0,
+        Math.min(100, percent)
+    );
 
-    UI.currentMarker.style.left =
-        percent + "%";
+    if (UI.fillBar) {
+
+        UI.fillBar.style.width =
+            percent + "%";
+
+    }
+
+    if (UI.currentMarker) {
+
+        UI.currentMarker.style.left =
+            percent + "%";
+
+    }
 
 }
 
@@ -103,12 +117,44 @@ function showCurrentMarkerUI(percent) {
     Answer Marker
 =========================================*/
 
-function showAnswerMarkerUI(percent) {
+function showAnswerMarkerUI(percent){
 
-    if (!UI.answerMarker) return;
+    if(!UI.answerMarker) return;
 
-    UI.answerMarker.style.left =
-        percent + "%";
+    UI.answerMarker.style.display="flex";
+
+    UI.answerMarker.style.left=percent+"%";
+
+    UI.answerMarker.innerHTML=
+
+        '<div class="triangle"></div>'+
+
+        '<div class="value">'+
+
+        percent+
+
+        '%</div>';
+
+}
+
+
+function showCorrectMarkerUI(percent){
+
+    if(!UI.correctMarker) return;
+
+    UI.correctMarker.style.display="flex";
+
+    UI.correctMarker.style.left=percent+"%";
+
+    UI.correctMarker.innerHTML=
+
+        '<div class="triangle"></div>'+
+
+        '<div class="value">'+
+
+        percent+
+
+        '%</div>';
 
 }
 
@@ -162,17 +208,19 @@ function resetResultUI() {
     Reset UI
 =========================================*/
 
-function resetUI() {
+if(UI.answerMarker){
 
-    resetInputUI();
+    UI.answerMarker.style.display="none";
 
-    resetResultUI();
+    UI.answerMarker.innerHTML="";
 
-    showCurrentMarkerUI(0);
+}
 
-    showAnswerMarkerUI(0);
+if(UI.correctMarker){
 
-    setSubmitButtonState(true);
+    UI.correctMarker.style.display="none";
+
+    UI.correctMarker.innerHTML="";
 
 }
 
@@ -362,10 +410,6 @@ document.addEventListener(
 
 );
 
-/*=========================================
-    Export
-=========================================*/
-
 window.UIManager = {
 
     showQuestionUI,
@@ -375,6 +419,8 @@ window.UIManager = {
     showCurrentMarkerUI,
 
     showAnswerMarkerUI,
+
+    showCorrectMarkerUI,
 
     showDifferenceUI,
 

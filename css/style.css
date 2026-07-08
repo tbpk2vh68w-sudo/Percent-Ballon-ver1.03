@@ -1715,3 +1715,34 @@ input:disabled{
     }
 
 }
+
+/*=========================================
+  Next Button
+=========================================*/
+#nextButton{
+
+    width:180px;
+
+    height:70px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:linear-gradient(
+        180deg,
+        #66d96b,
+        #2cbf4b
+    );
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    display:none;
+
+    margin:20px auto 0;
+
+}

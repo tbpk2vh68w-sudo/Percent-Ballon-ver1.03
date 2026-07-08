@@ -38,6 +38,9 @@ const PlayUI = {
     submitButton:
         document.getElementById("submitButton"),
 
+    nextButton:
+        document.getElementById("nextButton"),
+
     homeButton:
         document.getElementById("homeButton")
 
@@ -159,6 +162,14 @@ function bindEvents() {
 
     };
 
+    PlayUI.nextButton.onclick = function () {
+
+        PlayUI.nextButton.style.display = "none";
+
+        nextQuestion();
+
+    };
+
     PlayUI.homeButton.onclick = function () {
 
         location.href = "index.html";
@@ -172,6 +183,8 @@ function bindEvents() {
 =========================================*/
 
 function submitAnswer() {
+
+    PlayUI.answerInput.disabled = true;
 
     if (!Play.question) {
 
@@ -284,13 +297,7 @@ scoreText.textContent =
 
     }
 
-    setTimeout(
-
-        nextQuestion,
-
-        2000
-
-    );
+    PlayUI.nextButton.style.display = "inline-block";
 
 }
 
@@ -299,6 +306,8 @@ scoreText.textContent =
 =========================================*/
 
 function nextQuestion() {
+
+    PlayUI.answerInput.disabled = false;
 
     Play.room.currentQuestion++;
 
@@ -324,11 +333,13 @@ function nextQuestion() {
 
     Play.question = null;
 
-    Play.answer = null;
+Play.answer = null;
 
-    PlayUI.submitButton.disabled = false;
+PlayUI.submitButton.disabled = false;
 
-    showQuestion();
+PlayUI.nextButton.style.display = "none";
+
+showQuestion();
 
 }
 

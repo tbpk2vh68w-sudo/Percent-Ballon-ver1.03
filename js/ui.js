@@ -34,7 +34,13 @@ const UI = {
         document.getElementById("correctMarker"),
 
     fillBar:
-        document.getElementById("fillBar")
+        document.getElementById("fillBar"),
+
+    differenceText:
+        document.getElementById("differenceText"),
+
+    scoreText:
+        document.getElementById("scoreText")
 
 };
 
@@ -208,19 +214,51 @@ function resetResultUI() {
     Reset UI
 =========================================*/
 
-if(UI.answerMarker){
+function resetUI() {
 
-    UI.answerMarker.style.display="none";
+    resetInputUI();
 
-    UI.answerMarker.innerHTML="";
+    if (UI.answerInput) {
 
-}
+        UI.answerInput.disabled = false;
 
-if(UI.correctMarker){
+    }
 
-    UI.correctMarker.style.display="none";
+    if (UI.submitButton) {
 
-    UI.correctMarker.innerHTML="";
+        UI.submitButton.disabled = false;
+
+    }
+
+    if (UI.differenceText) {
+
+        UI.differenceText.textContent = "";
+
+    }
+
+    if (UI.scoreText) {
+
+        UI.scoreText.textContent = "";
+
+    }
+
+    if (UI.answerMarker) {
+
+        UI.answerMarker.style.display = "none";
+
+        UI.answerMarker.innerHTML = "";
+
+    }
+
+    if (UI.correctMarker) {
+
+        UI.correctMarker.style.display = "none";
+
+        UI.correctMarker.innerHTML = "";
+
+    }
+
+    showCurrentMarkerUI(0);
 
 }
 

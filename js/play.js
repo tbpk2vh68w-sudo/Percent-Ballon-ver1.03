@@ -64,6 +64,8 @@ function initPlay() {
 
     bindEvents();
 
+    resetUI();
+
     showQuestion();
 
 }
@@ -331,13 +333,13 @@ function nextQuestion() {
 
     );
 
-    Play.question = null;
+   Play.question = null;
 
 Play.answer = null;
 
-PlayUI.submitButton.disabled = false;
-
 PlayUI.nextButton.style.display = "none";
+
+resetUI();
 
 showQuestion();
 

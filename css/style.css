@@ -1764,3 +1764,17 @@ input:disabled{
     margin:20px auto 0;
 
 }
+
+/*=========================================
+  Retry Button
+=========================================*/
+
+#retryButton{
+
+    display:none;
+
+    margin:20px auto;
+
+    width:220px;
+
+}

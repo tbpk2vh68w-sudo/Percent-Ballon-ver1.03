@@ -44,6 +44,9 @@ const PlayUI = {
     homeButton:
         document.getElementById("homeButton")
 
+    ,retryButton:
+    document.getElementById("retryButton"),
+
 };
 
 /*=========================================
@@ -177,6 +180,18 @@ function bindEvents() {
         location.href = "index.html";
 
     };
+
+    PlayUI.retryButton.onclick = function () {
+
+    RoomManager.resetGame(
+        Play.room.id
+    );
+
+    GameManager.resetGame();
+
+    location.reload();
+
+};
 
 }
 
@@ -339,6 +354,9 @@ Play.answer = null;
 
 PlayUI.nextButton.style.display = "none";
 
+PlayUI.retryButton.style.display =
+    "none";
+
 resetUI();
 
 showQuestion();
@@ -354,22 +372,20 @@ function finishGame() {
     Play.room.state = "finished";
 
     RoomManager.saveRoom(
-
         Play.room
-
     );
 
     PlayUI.questionTitle.textContent =
-
         "ゲーム終了";
 
-   PlayUI.question.textContent =
-
-    "合計スコア：" +
-
-    GameManager.getGameScore();
+    PlayUI.question.textContent =
+        "合計スコア：" +
+        GameManager.getGameScore();
 
     PlayUI.submitButton.disabled = true;
+
+    PlayUI.retryButton.style.display =
+        "inline-block";
 
 }
 
@@ -403,12 +419,17 @@ function startSync() {
     Extend Initialize
 =========================================*/
 
-const _initPlay = initPlay;
+function initPlay() {
 
-initPlay = function () {
+    loadRoom();
 
-    _initPlay();
+    bindEvents();
 
-    startSync();
+    resetUI();
 
-};
+    PlayUI.retryButton.style.display =
+        "none";
+
+    showQuestion();
+
+}

@@ -291,41 +291,33 @@ function finishAnimation() {
 
     stopAnimation();
 
-    setAnimationValue(
-
-        Animation.target
-
-    );
+    setAnimationValue(Animation.target);
 
     showStopEffect();
 
     const marker =
+        document.getElementById("currentMarker");
 
-    document.getElementById(
+    if (marker) {
 
-        "currentMarker"
+        marker.classList.remove("success");
 
-    );
+        void marker.offsetWidth; // 再描画を強制
 
-if(marker){
+        marker.classList.add("success");
 
-    marker.classList.add(
-
-        "success"
-
-    );
-
-}
+        marker.addEventListener(
+            "animationend",
+            function () {
+                marker.classList.remove("success");
+            },
+            { once: true }
+        );
+    }
 
     setTimeout(function () {
 
-        if (
-
-            typeof Animation.callback ===
-
-            "function"
-
-        ) {
+        if (typeof Animation.callback === "function") {
 
             Animation.callback();
 

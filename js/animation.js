@@ -209,7 +209,7 @@ function updateDrift() {
 
     Animation.current +=
 
-        diff * 0.06;
+        diff * 0.07;
 
     setAnimationValue(
 
@@ -269,9 +269,9 @@ function updateTension() {
 
     const move =
 
-        diff * 0.18 +
+        diff * 0.12 +
 
-        (Math.random() - 0.5) * 1.2;
+        (Math.random() - 0.5) * 0.7;
 
     Animation.current += move;
 
@@ -323,7 +323,7 @@ function finishAnimation() {
 
         }
 
-    }, 500);
+    }, 700);
 
 }
 

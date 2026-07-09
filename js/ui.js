@@ -379,44 +379,38 @@ function createPercentScale() {
     container.innerHTML = "";
 
     for (
+    let i = 0;
+    i <= 100;
+    i++
+) {
 
-        let i = 0;
+        const tick = document.createElement("div");
 
-        i <= 100;
+tick.className = "tick";
 
-        i += 10
+if (i % 10 === 0) {
 
-    ) {
+    tick.classList.add("majorTick");
 
-        const tick =
+} else {
 
-            document.createElement(
+    tick.classList.add("minorTick");
 
-                "div"
+}
 
-            );
+tick.style.left = i + "%";
 
-        tick.className = "tick";
+        const label = document.createElement("span");
 
-        tick.style.left = i + "%";
+label.className = "tickLabel";
 
-        const label =
+if (i % 10 === 0) {
 
-            document.createElement(
+    label.textContent = i + "%";
 
-                "span"
+}
 
-            );
-
-        label.className = "tickLabel";
-
-        label.textContent =
-
-            i + "%";
-
-        tick.appendChild(label);
-
-        container.appendChild(tick);
+tick.appendChild(label);
 
     }
 

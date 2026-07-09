@@ -903,11 +903,45 @@ h1{
 
 .tick{
 
-    position:relative;
+    position:absolute;
+
+    bottom:0;
+
+    transform:translateX(-50%);
+
+}
+
+.majorTick{
+
+    width:2px;
+
+    height:18px;
+
+    background:#555;
+
+}
+
+.minorTick{
 
     width:1px;
 
-    height:170px;
+    height:8px;
+
+    background:#888;
+
+}
+
+.tickLabel{
+
+    position:absolute;
+
+    top:20px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:12px;
 
 }
 

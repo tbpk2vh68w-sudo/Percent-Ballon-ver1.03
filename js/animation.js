@@ -185,7 +185,7 @@ function updateChaos() {
     Animation.chaosCount =
         (Animation.chaosCount || 0) + 1;
 
-    if (Animation.chaosCount > 35) {
+    if (Animation.chaosCount > 80){
 
         Animation.chaosCount = 0;
 
@@ -207,9 +207,7 @@ function updateDrift() {
 
         Animation.current;
 
-    Animation.current +=
-
-        diff * 0.07;
+    Animation.current += diff * 0.03;
 
     setAnimationValue(
 
@@ -268,10 +266,8 @@ function updateTension() {
     }
 
     const move =
-
-        diff * 0.12 +
-
-        (Math.random() - 0.5) * 0.7;
+    diff * 0.08 +
+    (Math.random() - 0.5) * 0.8;
 
     Animation.current += move;
 

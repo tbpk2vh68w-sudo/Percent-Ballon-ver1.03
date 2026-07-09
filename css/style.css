@@ -889,10 +889,6 @@ h1{
 
     height:170px;
 
-    display:flex;
-
-    justify-content:space-between;
-
     z-index:5;
 
 }
@@ -967,7 +963,7 @@ h1{
 
 }
 
-.tick.major::before{
+.tick.majorTick::before{
 
     height:32px;
 

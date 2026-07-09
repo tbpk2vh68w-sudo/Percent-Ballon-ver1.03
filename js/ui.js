@@ -412,6 +412,8 @@ if (i % 10 === 0) {
 
 tick.appendChild(label);
 
+container.appendChild(tick);
+
     }
 
 }
